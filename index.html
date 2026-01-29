@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>音階視覺偵探 - Scale Vision Detective</title>
+    <title>音階視覺偵探 - 5音辨識</title>
     <style>
-        /* CSS樣式 */
         * {
             margin: 0;
             padding: 0;
@@ -18,23 +17,25 @@
             color: #fff;
             min-height: 100vh;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
         .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
+            max-width: 800px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 0 30px rgba(76, 201, 240, 0.3);
+            border: 2px solid #4cc9f0;
         }
         
         /* 標題樣式 */
         header {
             text-align: center;
             margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            border: 2px solid #4cc9f0;
-            box-shadow: 0 0 20px rgba(76, 201, 240, 0.3);
         }
         
         h1 {
@@ -50,179 +51,71 @@
             margin-bottom: 15px;
         }
         
-        /* 遊戲狀態欄 */
+        /* 遊戲狀態 */
         .game-status {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 25px;
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
-            align-items: center;
-            border: 1px solid #4361ee;
-        }
-        
-        .stats {
-            display: flex;
-            gap: 25px;
-            flex-wrap: wrap;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
         }
         
         .stat-item {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: #a9d6e5;
         }
         
-        .stat-item i {
-            color: #4cc9f0;
-            margin-right: 8px;
-        }
-        
-        #level, #score, #combo, #lives {
+        .stat-value {
             color: #f72585;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
         }
         
-        .progress-bar {
-            width: 300px;
-            height: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-            border: 1px solid #4361ee;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #4361ee, #4cc9f0);
-            width: 100%;
-            transition: width 0.3s ease;
-        }
-        
-        /* 遊戲主區域 */
-        .game-area {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-        
-        @media (max-width: 768px) {
-            .game-area {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        /* 鋼琴鍵盤區 */
-        .piano-section {
-            background: rgba(0, 0, 0, 0.6);
+        /* 問題區域 */
+        .question-section {
+            background: rgba(0, 0, 0, 0.3);
             border-radius: 15px;
-            padding: 25px;
-            border: 2px solid #7209b7;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #4361ee;
+            text-align: center;
         }
         
-        .section-title {
+        .question {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: #a9d6e5;
+        }
+        
+        /* 音階顯示 */
+        .scale-display {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 1px solid #7209b7;
+        }
+        
+        .scale-title {
             color: #7209b7;
             font-size: 1.5rem;
             margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .piano-container {
-            background: #0d1b2a;
-            border-radius: 10px;
-            padding: 20px;
-            overflow-x: auto;
-            margin-bottom: 20px;
-            border: 1px solid #3a0ca3;
-        }
-        
-        .piano {
-            position: relative;
-            height: 150px;
-            min-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .white-keys, .black-keys {
-            position: absolute;
-            display: flex;
-        }
-        
-        .white-key {
-            width: 40px;
-            height: 150px;
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 0 0 5px 5px;
-            position: relative;
-            cursor: pointer;
-            box-shadow: 0 3px 5px rgba(0,0,0,0.2);
-        }
-        
-        .white-key.active {
-            background: linear-gradient(to bottom, #4cc9f0, #3a86ff);
-            box-shadow: 0 0 15px #4cc9f0;
-        }
-        
-        .black-key {
-            width: 24px;
-            height: 90px;
-            background: #222;
-            border: 1px solid #000;
-            border-radius: 0 0 3px 3px;
-            margin-left: -12px;
-            margin-right: -12px;
-            z-index: 1;
-            position: relative;
-            cursor: pointer;
-        }
-        
-        .black-key.active {
-            background: linear-gradient(to bottom, #7209b7, #560bad);
-            box-shadow: 0 0 10px #7209b7;
-        }
-        
-        .key-label {
-            position: absolute;
-            bottom: 10px;
-            width: 100%;
             text-align: center;
-            font-weight: bold;
-            color: #333;
         }
         
-        .black-key .key-label {
-            color: #fff;
-            font-size: 0.8rem;
-        }
-        
-        /* 樂譜顯示區 */
-        .sheet-music {
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 15px;
-            padding: 25px;
-            border: 2px solid #f72585;
-        }
-        
-        .notes-display {
+        .notes-container {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 15px;
-            margin: 25px 0;
-            min-height: 120px;
-            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
         }
         
         .note {
             width: 70px;
             height: 70px;
-            background: linear-gradient(145deg, #3a0ca3, #4361ee);
+            background: linear-gradient(145deg, #4361ee, #3a0ca3);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -232,40 +125,19 @@
             color: white;
             box-shadow: 0 5px 15px rgba(58, 12, 163, 0.4);
             transition: transform 0.2s;
-            position: relative;
         }
         
-        .note::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), transparent);
+        .note:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px #4cc9f0;
         }
         
-        /* 問題區域 */
-        .question-section {
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 30px;
-            border: 2px solid #4cc9f0;
-            text-align: center;
-        }
-        
-        .question {
-            font-size: 1.8rem;
-            margin-bottom: 30px;
-            color: #a9d6e5;
-            min-height: 60px;
-        }
-        
+        /* 答案選項 */
         .answer-options {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr 1fr;
             gap: 20px;
-            margin-top: 20px;
+            margin-top: 30px;
         }
         
         @media (max-width: 600px) {
@@ -275,28 +147,26 @@
         }
         
         .option {
-            padding: 20px;
+            padding: 25px;
             background: linear-gradient(145deg, #1d3557, #457b9d);
             border: none;
             border-radius: 12px;
             color: white;
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 5px 0 #1d3557;
-            position: relative;
-            overflow: hidden;
+            font-weight: bold;
         }
         
         .option:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 0 #1d3557;
-            background: linear-gradient(145deg, #457b9d, #1d3557);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 0 #1d3557;
         }
         
         .option:active {
-            transform: translateY(2px);
-            box-shadow: 0 3px 0 #1d3557;
+            transform: translateY(0);
+            box-shadow: 0 5px 0 #1d3557;
         }
         
         .option.correct {
@@ -350,141 +220,72 @@
         }
         
         .btn-primary:hover {
-            background: linear-gradient(145deg, #3a0ca3, #4361ee);
             transform: translateY(-3px);
             box-shadow: 0 8px 0 #2d00a3;
         }
         
-        .btn-secondary {
-            background: linear-gradient(145deg, #f72585, #b5179e);
-            color: white;
-            box-shadow: 0 5px 0 #8a0a6e;
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 5px 0 #2d00a3;
         }
         
-        .btn-secondary:hover {
-            background: linear-gradient(145deg, #b5179e, #f72585);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 0 #8a0a6e;
-        }
-        
-        .btn-help {
-            background: linear-gradient(145deg, #4cc9f0, #4895ef);
-            color: white;
-            box-shadow: 0 5px 0 #2a7bb0;
-        }
-        
-        /* 教學模組 */
+        /* 教學區 */
         .instructions {
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.3);
             border-radius: 15px;
             padding: 25px;
             margin-top: 30px;
-            border: 2px solid #2a9d8f;
+            border: 1px solid #2a9d8f;
             display: none;
         }
         
         .instructions h3 {
             color: #2a9d8f;
             margin-bottom: 20px;
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 1.5rem;
+            text-align: center;
         }
         
-        .scale-comparison {
+        .tips {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
             margin: 20px 0;
         }
         
         @media (max-width: 768px) {
-            .scale-comparison {
+            .tips {
                 grid-template-columns: 1fr;
             }
         }
         
-        .scale-card {
-            background: rgba(255, 255, 255, 0.1);
+        .tip-card {
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
             padding: 20px;
         }
         
-        .scale-title {
+        .tip-title {
             color: #4cc9f0;
             font-size: 1.3rem;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #4cc9f0;
-            padding-bottom: 8px;
+            margin-bottom: 10px;
         }
         
-        .scale-notes {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-        }
-        
-        .scale-note {
-            padding: 10px 15px;
-            background: #4361ee;
-            border-radius: 8px;
-            font-weight: bold;
-        }
-        
-        /* 響應式設計 */
-        @media (max-width: 768px) {
-            h1 { font-size: 2rem; }
-            .game-status { flex-direction: column; gap: 15px; }
-            .progress-bar { width: 100%; }
-            .piano-container { padding: 10px; }
-            .piano { min-width: 400px; height: 120px; }
-            .white-key { width: 30px; height: 120px; }
-            .black-key { width: 18px; height: 70px; }
-            .note { width: 50px; height: 50px; font-size: 1.3rem; }
-        }
-        
-        @media (max-width: 480px) {
-            h1 { font-size: 1.6rem; }
-            .piano { min-width: 320px; height: 100px; }
-            .white-key { width: 24px; height: 100px; }
-            .black-key { width: 14px; height: 60px; margin-left: -7px; margin-right: -7px; }
-            .note { width: 40px; height: 40px; font-size: 1.1rem; }
-            .option { font-size: 1.1rem; padding: 15px; }
-            .btn { padding: 12px 20px; font-size: 1rem; }
-        }
-        
-        /* 分數動畫 */
-        .score-popup {
-            position: fixed;
-            font-size: 2rem;
-            font-weight: bold;
-            color: #f72585;
-            text-shadow: 0 0 10px white;
-            pointer-events: none;
-            animation: floatUp 1s ease-out forwards;
-            z-index: 1000;
-        }
-        
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
-        }
-        
-        /* 遊戲結束畫面 */
+        /* 遊戲結束 */
         .game-over {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.95);
             display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 1001;
+            z-index: 1000;
         }
         
         .game-over-content {
@@ -496,12 +297,6 @@
             width: 90%;
             border: 3px solid #4cc9f0;
             box-shadow: 0 0 40px rgba(76, 201, 240, 0.5);
-        }
-        
-        .game-over h2 {
-            font-size: 3rem;
-            color: #f72585;
-            margin-bottom: 30px;
         }
         
         .final-stats {
@@ -518,21 +313,89 @@
         }
         
         .final-stat-value {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: #4cc9f0;
             font-weight: bold;
         }
         
-        /* 難度選擇 */
+        /* 分數動畫 */
+        .score-popup {
+            position: fixed;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #f72585;
+            text-shadow: 0 0 10px white;
+            pointer-events: none;
+            animation: floatUp 1s ease-out forwards;
+            z-index: 100;
+        }
+        
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+        
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .question {
+                font-size: 1.5rem;
+            }
+            
+            .option {
+                font-size: 1.3rem;
+                padding: 20px;
+            }
+            
+            .note {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.6rem;
+            }
+            
+            .question {
+                font-size: 1.3rem;
+            }
+            
+            .option {
+                font-size: 1.2rem;
+                padding: 15px;
+            }
+            
+            .note {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+        }
+        
         .difficulty-selector {
             display: flex;
-            gap: 15px;
             justify-content: center;
-            margin-top: 20px;
+            gap: 15px;
+            margin-top: 15px;
         }
         
         .difficulty-btn {
-            padding: 10px 20px;
+            padding: 8px 15px;
             background: #3a0ca3;
             color: white;
             border: none;
@@ -545,206 +408,162 @@
         .difficulty-btn.active {
             background: #4cc9f0;
             transform: scale(1.1);
-            box-shadow: 0 0 15px #4cc9f0;
-        }
-        
-        .difficulty-btn:hover:not(.active) {
-            background: #4361ee;
+            box-shadow: 0 0 10px #4cc9f0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- 遊戲標題 -->
+        <!-- 標題 -->
         <header>
-            <h1><i class="fas fa-music"></i> 音階視覺偵探</h1>
-            <p class="subtitle">通過視覺辨識大調音階與五聲音階</p>
+            <h1>音階視覺偵探</h1>
+            <p class="subtitle">五音辨識訓練 - 大調音階 vs 五聲音階</p>
             <div class="difficulty-selector">
-                <button class="difficulty-btn active" data-level="1">初級</button>
-                <button class="difficulty-btn" data-level="2">中級</button>
-                <button class="difficulty-btn" data-level="3">專家</button>
+                <button class="difficulty-btn active" data-level="1">基礎模式</button>
+                <button class="difficulty-btn" data-level="2">進階模式</button>
+                <button class="difficulty-btn" data-level="3">挑戰模式</button>
             </div>
         </header>
 
-        <!-- 遊戲狀態欄 -->
+        <!-- 遊戲狀態 -->
         <div class="game-status">
-            <div class="stats">
-                <span class="stat-item">
-                    <i class="fas fa-flag"></i>
-                    關卡: <span id="level">1</span>/10
-                </span>
-                <span class="stat-item">
-                    <i class="fas fa-star"></i>
-                    分數: <span id="score">0</span>
-                </span>
-                <span class="stat-item">
-                    <i class="fas fa-bolt"></i>
-                    連擊: <span id="combo">0</span>
-                </span>
-                <span class="stat-item">
-                    <i class="fas fa-heart"></i>
-                    生命: <span id="lives">3</span>
-                </span>
+            <div class="stat-item">
+                關卡: <span class="stat-value" id="level">1</span>/20
             </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="timeBar"></div>
+            <div class="stat-item">
+                分數: <span class="stat-value" id="score">0</span>
             </div>
-        </div>
-
-        <!-- 遊戲主區域 -->
-        <div class="game-area">
-            <!-- 鋼琴鍵盤區 -->
-            <div class="piano-section">
-                <h2 class="section-title"><i class="fas fa-keyboard"></i> 鋼琴鍵盤</h2>
-                <div class="piano-container">
-                    <div class="piano" id="piano">
-                        <!-- 鋼琴鍵盤由JavaScript生成 -->
-                    </div>
-                </div>
-                <div class="current-scale">
-                    <p>當前音階: <span id="scaleName">C大調音階</span></p>
-                </div>
+            <div class="stat-item">
+                連擊: <span class="stat-value" id="combo">0</span>
             </div>
-
-            <!-- 樂譜顯示區 -->
-            <div class="sheet-music">
-                <h2 class="section-title"><i class="fas fa-music"></i> 樂譜顯示</h2>
-                <div class="notes-display" id="notesDisplay">
-                    <!-- 音符由JavaScript生成 -->
-                </div>
-                <div class="scale-info">
-                    <p>音階結構: <span id="scaleStructure">全全半全全全半</span></p>
-                    <p>音階類型: <span id="scaleType">大調音階 (7個音)</span></p>
-                </div>
+            <div class="stat-item">
+                正確: <span class="stat-value" id="correct">0</span>/<span id="total">0</span>
             </div>
         </div>
 
         <!-- 問題區域 -->
         <div class="question-section">
             <div class="question" id="question">請問這是什麼音階？</div>
+            
+            <!-- 音階顯示 -->
+            <div class="scale-display">
+                <div class="scale-title">顯示的音階</div>
+                <div class="notes-container" id="notesDisplay">
+                    <!-- 音符由JS生成 -->
+                </div>
+                <div class="scale-info">
+                    <p>音階長度: <span id="noteCount">5</span>個音</p>
+                </div>
+            </div>
+
+            <!-- 答案選項 -->
             <div class="answer-options" id="answerOptions">
-                <!-- 答案選項由JavaScript生成 -->
+                <button class="option" data-answer="major">大調音階</button>
+                <button class="option" data-answer="pentatonic">五聲音階</button>
             </div>
         </div>
 
         <!-- 按鈕區域 -->
         <div class="controls">
-            <button class="btn btn-help" id="helpBtn">
-                <i class="fas fa-question-circle"></i> 提示
-            </button>
-            <button class="btn btn-secondary" id="hintBtn">
-                <i class="fas fa-lightbulb"></i> 查看教學
+            <button class="btn btn-primary" id="hintBtn">
+                <span>💡</span> 查看提示
             </button>
             <button class="btn btn-primary" id="nextBtn" disabled>
-                <i class="fas fa-forward"></i> 下一題
+                <span>⏭️</span> 下一題
             </button>
         </div>
 
-        <!-- 教學模組 -->
+        <!-- 教學區 -->
         <div class="instructions" id="instructions">
-            <h3><i class="fas fa-graduation-cap"></i> 音階教學</h3>
-            <div class="scale-comparison">
-                <div class="scale-card">
-                    <div class="scale-title">大調音階</div>
-                    <p>特徵：7個音，有導音，包含半音</p>
-                    <p>結構：全音 - 全音 - 半音 - 全音 - 全音 - 全音 - 半音</p>
-                    <div class="scale-notes">
-                        <span class="scale-note">C</span>
-                        <span class="scale-note">D</span>
-                        <span class="scale-note">E</span>
-                        <span class="scale-note">F</span>
-                        <span class="scale-note">G</span>
-                        <span class="scale-note">A</span>
-                        <span class="scale-note">B</span>
-                        <span class="scale-note">C'</span>
-                    </div>
+            <h3>音階辨識技巧</h3>
+            <div class="tips">
+                <div class="tip-card">
+                    <div class="tip-title">大調音階（5音選段）</div>
+                    <p>從完整7音大調中選取5個連續音</p>
+                    <p>範例: C D E F G (C大調前5音)</p>
+                    <p>範例: F G A B C' (F大調後5音)</p>
+                    <p>特徵：有導音(B)、有半音(F-B)</p>
                 </div>
-                <div class="scale-card">
-                    <div class="scale-title">五聲音階</div>
-                    <p>特徵：5個音，無半音，更平和</p>
-                    <p>結構：從大調音階去掉第4音和第7音</p>
-                    <div class="scale-notes">
-                        <span class="scale-note">C</span>
-                        <span class="scale-note">D</span>
-                        <span class="scale-note">E</span>
-                        <span class="scale-note">G</span>
-                        <span class="scale-note">A</span>
-                        <span class="scale-note">C'</span>
-                    </div>
+                <div class="tip-card">
+                    <div class="tip-title">五聲音階（完整5音）</div>
+                    <p>固定只有5個音，沒有半音</p>
+                    <p>C五聲音階: C D E G A</p>
+                    <p>G五聲音階: G A B D E</p>
+                    <p>特徵：沒有第4音(F)、沒有第7音(B)</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-title">解題策略</div>
+                    <p>1. 數音數 → 都是5個音</p>
+                    <p>2. 找半音 → 檢查E-F、B-C'之間距</p>
+                    <p>3. 記模式 → 五聲音階缺4、7音</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-title">快速判斷</div>
+                    <p>✓ 有B或F音 → 可能是大調</p>
+                    <p>✓ 缺F缺B → 一定是五聲</p>
+                    <p>✓ 音程均勻 → 可能是五聲</p>
+                    <p>✓ 音程不均 → 可能是大調</p>
                 </div>
             </div>
-            <button class="btn btn-primary" id="closeInstructions">
-                <i class="fas fa-times"></i> 關閉教學
+            <button class="btn btn-primary" id="closeInstructions" style="margin-top: 20px;">
+                <span>✕</span> 關閉提示
             </button>
         </div>
+    </div>
 
-        <!-- 遊戲結束畫面 -->
-        <div class="game-over" id="gameOver">
-            <div class="game-over-content">
-                <h2>遊戲結束！</h2>
-                <div class="final-stats">
-                    <div class="final-stat">
-                        <div>最終分數</div>
-                        <div class="final-stat-value" id="finalScore">0</div>
-                    </div>
-                    <div class="final-stat">
-                        <div>完成關卡</div>
-                        <div class="final-stat-value" id="finalLevel">0</div>
-                    </div>
-                    <div class="final-stat">
-                        <div>最高連擊</div>
-                        <div class="final-stat-value" id="finalCombo">0</div>
-                    </div>
-                    <div class="final-stat">
-                        <div>正確率</div>
-                        <div class="final-stat-value" id="finalAccuracy">0%</div>
-                    </div>
+    <!-- 遊戲結束畫面 -->
+    <div class="game-over" id="gameOver">
+        <div class="game-over-content">
+            <h2 style="color: #4cc9f0; margin-bottom: 20px;">🎵 遊戲完成！ 🎵</h2>
+            <div class="final-stats">
+                <div class="final-stat">
+                    <div>最終分數</div>
+                    <div class="final-stat-value" id="finalScore">0</div>
                 </div>
-                <div class="controls">
-                    <button class="btn btn-secondary" id="restartBtn">
-                        <i class="fas fa-redo"></i> 重新開始
-                    </button>
-                    <button class="btn btn-primary" id="menuBtn">
-                        <i class="fas fa-home"></i> 返回主選單
-                    </button>
+                <div class="final-stat">
+                    <div>通過關卡</div>
+                    <div class="final-stat-value" id="finalLevel">0</div>
                 </div>
+                <div class="final-stat">
+                    <div>最高連擊</div>
+                    <div class="final-stat-value" id="finalCombo">0</div>
+                </div>
+                <div class="final-stat">
+                    <div>正確率</div>
+                    <div class="final-stat-value" id="finalAccuracy">0%</div>
+                </div>
+            </div>
+            <div class="controls" style="margin-top: 30px;">
+                <button class="btn btn-primary" id="restartBtn">
+                    <span>🔄</span> 重新開始
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- Font Awesome Icons (使用CDN) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
-
     <script>
-        // JavaScript遊戲邏輯
         document.addEventListener('DOMContentLoaded', function() {
             // 遊戲變數
             let currentLevel = 1;
             let score = 0;
             let combo = 0;
-            let lives = 3;
-            let difficulty = 1; // 1=初級, 2=中級, 3=專家
+            let difficulty = 1; // 1=基礎, 2=進階, 3=挑戰
             let gameActive = true;
-            let timer = 30;
-            let timerInterval;
-            let currentScale = [];
-            let correctAnswer = '';
-            let totalQuestions = 0;
-            let correctQuestions = 0;
+            let correctCount = 0;
+            let totalCount = 0;
+            let maxCombo = 0;
             
             // 音階數據
             const scales = {
                 major: {
                     name: "大調音階",
-                    pattern: [0, 2, 4, 5, 7, 9, 11, 12], // C大調音階半音偏移
-                    notes: ["C", "D", "E", "F", "G", "A", "B", "C'"],
-                    structure: "全全半全全全半"
+                    pattern: [0, 2, 4, 5, 7, 9, 11, 12], // 完整大調音階
+                    notes: ["C", "D", "E", "F", "G", "A", "B", "C'"]
                 },
                 pentatonic: {
                     name: "五聲音階",
-                    pattern: [0, 2, 4, 7, 9, 12], // 從大調去掉4th和7th
-                    notes: ["C", "D", "E", "G", "A", "C'"],
-                    structure: "全全小三全小三"
+                    pattern: [0, 2, 4, 7, 9, 12], // 五聲音階
+                    notes: ["C", "D", "E", "G", "A", "C'"]
                 }
             };
             
@@ -755,17 +574,13 @@
             const levelElement = document.getElementById('level');
             const scoreElement = document.getElementById('score');
             const comboElement = document.getElementById('combo');
-            const livesElement = document.getElementById('lives');
-            const timeBarElement = document.getElementById('timeBar');
-            const pianoElement = document.getElementById('piano');
-            const notesDisplayElement = document.getElementById('notesDisplay');
-            const scaleNameElement = document.getElementById('scaleName');
-            const scaleStructureElement = document.getElementById('scaleStructure');
-            const scaleTypeElement = document.getElementById('scaleType');
+            const correctElement = document.getElementById('correct');
+            const totalElement = document.getElementById('total');
             const questionElement = document.getElementById('question');
+            const notesDisplayElement = document.getElementById('notesDisplay');
+            const noteCountElement = document.getElementById('noteCount');
             const answerOptionsElement = document.getElementById('answerOptions');
             const nextBtn = document.getElementById('nextBtn');
-            const helpBtn = document.getElementById('helpBtn');
             const hintBtn = document.getElementById('hintBtn');
             const instructionsElement = document.getElementById('instructions');
             const closeInstructionsBtn = document.getElementById('closeInstructions');
@@ -775,28 +590,22 @@
             const finalComboElement = document.getElementById('finalCombo');
             const finalAccuracyElement = document.getElementById('finalAccuracy');
             const restartBtn = document.getElementById('restartBtn');
-            const menuBtn = document.getElementById('menuBtn');
             const difficultyBtns = document.querySelectorAll('.difficulty-btn');
             
             // 初始化遊戲
             initGame();
             
             function initGame() {
-                // 重置遊戲狀態
                 currentLevel = 1;
                 score = 0;
                 combo = 0;
-                lives = 3;
+                maxCombo = 0;
+                correctCount = 0;
+                totalCount = 0;
                 gameActive = true;
-                totalQuestions = 0;
-                correctQuestions = 0;
                 
                 updateUI();
-                createPianoKeyboard();
                 generateQuestion();
-                startTimer();
-                
-                // 隱藏遊戲結束畫面
                 gameOverElement.style.display = 'none';
                 instructionsElement.style.display = 'none';
             }
@@ -805,243 +614,163 @@
                 levelElement.textContent = currentLevel;
                 scoreElement.textContent = score;
                 comboElement.textContent = combo;
-                livesElement.textContent = lives;
-            }
-            
-            function createPianoKeyboard() {
-                pianoElement.innerHTML = '';
-                
-                // 創建白鍵
-                const whiteKeys = document.createElement('div');
-                whiteKeys.className = 'white-keys';
-                
-                // 從C3到C5
-                const whiteKeyNotes = ['C', 'D', 'E', 'F', 'G', 'A', 'B', 'C\'', 'D\'', 'E\'', 'F\'', 'G\'', 'A\'', 'B\'', 'C\'\''];
-                
-                whiteKeyNotes.forEach((note, index) => {
-                    const key = document.createElement('div');
-                    key.className = 'white-key';
-                    key.dataset.note = note;
-                    
-                    const label = document.createElement('div');
-                    label.className = 'key-label';
-                    label.textContent = note;
-                    
-                    key.appendChild(label);
-                    whiteKeys.appendChild(key);
-                });
-                
-                // 創建黑鍵
-                const blackKeys = document.createElement('div');
-                blackKeys.className = 'black-keys';
-                
-                // 黑鍵位置 (C# D# F# G# A#)
-                const blackKeyNotes = ['C#', 'D#', '', 'F#', 'G#', 'A#', '', 'C#\'', 'D#\'', '', 'F#\'', 'G#\'', 'A#\'', '', 'C#\'\''];
-                
-                blackKeyNotes.forEach((note, index) => {
-                    if (note) {
-                        const key = document.createElement('div');
-                        key.className = 'black-key';
-                        key.dataset.note = note;
-                        key.style.left = `${index * 40 + 28}px`;
-                        
-                        const label = document.createElement('div');
-                        label.className = 'key-label';
-                        label.textContent = note;
-                        
-                        key.appendChild(label);
-                        blackKeys.appendChild(key);
-                    }
-                });
-                
-                pianoElement.appendChild(whiteKeys);
-                pianoElement.appendChild(blackKeys);
+                correctElement.textContent = correctCount;
+                totalElement.textContent = totalCount;
             }
             
             function generateQuestion() {
                 if (!gameActive) return;
                 
-                // 清除答案選項
-                answerOptionsElement.innerHTML = '';
-                
                 // 隨機選擇根音
-                const root = roots[Math.floor(Math.random() * roots.length)];
+                const rootIndex = Math.floor(Math.random() * roots.length);
+                const root = roots[rootIndex];
                 
-                // 隨機選擇音階類型
-                const scaleType = Math.random() > 0.5 ? 'major' : 'pentatonic';
+                // 隨機選擇音階類型 (50/50機率)
+                const isPentatonic = Math.random() > 0.5;
+                const scaleType = isPentatonic ? 'pentatonic' : 'major';
                 const scale = scales[scaleType];
                 
-                // 生成當前音階
-                currentScale = scale.notes.map(note => {
-                    if (note === "C'") return root + "'";
-                    if (note === "C''") return root + "''";
-                    return note;
-                });
+                // 生成顯示的音階（5個音）
+                let displayNotes = [];
+                
+                if (scaleType === 'pentatonic') {
+                    // 五聲音階：直接取前5個音
+                    displayNotes = scale.notes.slice(0, 5).map(note => 
+                        note.replace('C', root).replace("C'", root + "'")
+                    );
+                } else {
+                    // 大調音階：從7音中選取連續的5個音
+                    const fullMajorScale = scales.major.notes.map(note => 
+                        note.replace('C', root).replace("C'", root + "'")
+                    );
+                    
+                    // 隨機選擇起始位置 (0-3)
+                    const startPos = Math.floor(Math.random() * 4);
+                    displayNotes = fullMajorScale.slice(startPos, startPos + 5);
+                }
                 
                 // 顯示音階
-                displayScale(currentScale);
+                displayScale(displayNotes);
                 
-                // 高亮鋼琴鍵
-                highlightPianoKeys(currentScale);
-                
-                // 更新音階資訊
-                scaleNameElement.textContent = root + scale.name;
-                scaleStructureElement.textContent = scale.structure;
-                scaleTypeElement.textContent = `${scale.name} (${scale.notes.length}個音)`;
-                
-                // 生成問題
-                let question = '';
-                if (difficulty === 1) {
-                    question = `這是什麼音階？`;
-                } else if (difficulty === 2) {
-                    question = `這個${root}音階是什麼類型？`;
-                } else {
-                    question = `根據結構判斷，這是什麼音階？`;
+                // 更新問題
+                let questionText = "請問這是什麼音階？";
+                if (difficulty === 2) {
+                    questionText = `這個${displayNotes[0]}音階是什麼類型？`;
+                } else if (difficulty === 3) {
+                    questionText = `快速判斷：這是大調還是五聲？`;
                 }
-                questionElement.textContent = question;
+                questionElement.textContent = questionText;
                 
-                // 生成答案選項
-                const options = [];
-                correctAnswer = scale.name;
+                // 儲存正確答案
+                window.correctAnswer = scaleType;
+                window.currentNotes = displayNotes;
                 
-                // 正確選項
-                options.push(scale.name);
-                
-                // 錯誤選項
-                const wrongOptions = [];
-                const allScaleNames = ["大調音階", "五聲音階", "自然小調", "和聲小調", "旋律小調", "藍調音階"];
-                
-                // 移除正確答案
-                const availableOptions = allScaleNames.filter(name => name !== scale.name);
-                
-                // 隨機選擇3個錯誤答案
-                for (let i = 0; i < 3; i++) {
-                    const randomIndex = Math.floor(Math.random() * availableOptions.length);
-                    wrongOptions.push(availableOptions[randomIndex]);
-                    availableOptions.splice(randomIndex, 1);
-                }
-                
-                // 合併選項並隨機排序
-                const allOptions = [...wrongOptions, scale.name];
-                shuffleArray(allOptions);
-                
-                // 創建選項按鈕
-                allOptions.forEach(option => {
-                    const button = document.createElement('button');
-                    button.className = 'option';
-                    button.textContent = option;
-                    button.dataset.answer = option;
-                    
-                    button.addEventListener('click', function() {
-                        if (!nextBtn.disabled) return; // 如果已經答過了，忽略點擊
-                        checkAnswer(this);
-                    });
-                    
-                    answerOptionsElement.appendChild(button);
+                // 啟用答案按鈕
+                document.querySelectorAll('.option').forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.remove('correct', 'wrong');
+                    btn.style.opacity = '1';
                 });
                 
-                // 重置按鈕狀態
+                // 禁用下一題按鈕
                 nextBtn.disabled = true;
-                
-                // 重置計時器
-                resetTimer();
-                
-                totalQuestions++;
             }
             
             function displayScale(notes) {
                 notesDisplayElement.innerHTML = '';
+                noteCountElement.textContent = notes.length;
                 
                 notes.forEach(note => {
                     const noteElement = document.createElement('div');
                     noteElement.className = 'note';
                     noteElement.textContent = note;
+                    
+                    // 如果是半音位置（E-F或B-C'），添加特殊樣式
+                    if (note.includes('F') || note.includes('B')) {
+                        noteElement.style.background = 'linear-gradient(145deg, #f72585, #b5179e)';
+                    }
+                    
                     notesDisplayElement.appendChild(noteElement);
                 });
             }
             
-            function highlightPianoKeys(notes) {
-                // 移除所有高亮
-                document.querySelectorAll('.white-key, .black-key').forEach(key => {
-                    key.classList.remove('active');
-                });
-                
-                // 高亮對應的鍵
-                notes.forEach(note => {
-                    const key = document.querySelector(`[data-note="${note}"]`);
-                    if (key) {
-                        key.classList.add('active');
-                    }
-                });
-            }
-            
-            function checkAnswer(selectedButton) {
-                if (!gameActive) return;
-                
-                const selectedAnswer = selectedButton.dataset.answer;
-                const isCorrect = selectedAnswer === correctAnswer;
-                
-                // 禁用所有選項
-                document.querySelectorAll('.option').forEach(btn => {
-                    btn.disabled = true;
-                });
-                
-                // 顯示正確/錯誤
-                if (isCorrect) {
-                    selectedButton.classList.add('correct');
+            // 答案檢查
+            document.querySelectorAll('.option').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (!nextBtn.disabled || !gameActive) return;
                     
-                    // 計算分數
-                    const baseScore = 100 * difficulty;
-                    const comboBonus = combo * 10;
-                    const timeBonus = Math.floor(timer / 3) * 5;
-                    const earnedScore = baseScore + comboBonus + timeBonus;
+                    const selectedAnswer = this.dataset.answer;
+                    const isCorrect = selectedAnswer === window.correctAnswer;
                     
-                    score += earnedScore;
-                    combo++;
-                    correctQuestions++;
-                    
-                    // 顯示分數彈出
-                    showScorePopup(selectedButton, `+${earnedScore}`);
-                    
-                    // 檢查是否升級
-                    if (correctQuestions % 5 === 0 && currentLevel < 10) {
-                        currentLevel++;
-                        showLevelUp();
-                    }
-                } else {
-                    selectedButton.classList.add('wrong');
-                    
-                    // 顯示正確答案
-                    document.querySelectorAll('.option').forEach(btn => {
-                        if (btn.dataset.answer === correctAnswer) {
-                            btn.classList.add('correct');
-                        }
+                    // 禁用所有選項
+                    document.querySelectorAll('.option').forEach(b => {
+                        b.disabled = true;
                     });
                     
-                    combo = 0;
-                    lives--;
-                    
-                    if (lives <= 0) {
-                        gameOver();
-                        return;
+                    // 顯示正確/錯誤
+                    if (isCorrect) {
+                        this.classList.add('correct');
+                        handleCorrectAnswer();
+                    } else {
+                        this.classList.add('wrong');
+                        // 顯示正確答案
+                        document.querySelectorAll('.option').forEach(b => {
+                            if (b.dataset.answer === window.correctAnswer) {
+                                b.classList.add('correct');
+                            }
+                        });
+                        handleWrongAnswer();
                     }
+                    
+                    // 啟用下一題按鈕
+                    nextBtn.disabled = false;
+                    
+                    totalCount++;
+                    updateUI();
+                    
+                    // 檢查是否完成遊戲
+                    if (currentLevel >= 20) {
+                        setTimeout(() => gameComplete(), 1000);
+                    }
+                });
+            });
+            
+            function handleCorrectAnswer() {
+                // 計算分數
+                const baseScore = 100;
+                const difficultyBonus = difficulty * 50;
+                const comboBonus = combo * 20;
+                const earnedScore = baseScore + difficultyBonus + comboBonus;
+                
+                score += earnedScore;
+                combo++;
+                correctCount++;
+                
+                if (combo > maxCombo) {
+                    maxCombo = combo;
                 }
                 
-                // 更新UI
-                updateUI();
+                // 顯示分數彈出
+                showScorePopup(`+${earnedScore}`);
                 
-                // 啟用下一題按鈕
-                nextBtn.disabled = false;
+                // 每5題升一級
+                if (correctCount % 5 === 0 && currentLevel < 20) {
+                    currentLevel++;
+                    showLevelUp();
+                }
             }
             
-            function showScorePopup(element, scoreText) {
+            function handleWrongAnswer() {
+                combo = 0;
+            }
+            
+            function showScorePopup(text) {
                 const popup = document.createElement('div');
                 popup.className = 'score-popup';
-                popup.textContent = scoreText;
-                
-                const rect = element.getBoundingClientRect();
-                popup.style.left = `${rect.left + rect.width / 2}px`;
-                popup.style.top = `${rect.top}px`;
+                popup.textContent = text;
+                popup.style.left = '50%';
+                popup.style.top = '50%';
+                popup.style.transform = 'translate(-50%, -50%)';
                 
                 document.body.appendChild(popup);
                 
@@ -1051,124 +780,43 @@
             }
             
             function showLevelUp() {
-                const message = document.createElement('div');
-                message.className = 'score-popup';
-                message.textContent = `升級！關卡 ${currentLevel}`;
-                message.style.color = '#4cc9f0';
-                message.style.fontSize = '2.5rem';
+                const popup = document.createElement('div');
+                popup.className = 'score-popup';
+                popup.textContent = `🎉 升級！關卡 ${currentLevel}`;
+                popup.style.color = '#4cc9f0';
+                popup.style.fontSize = '2.5rem';
                 
-                message.style.left = '50%';
-                message.style.top = '50%';
-                message.style.transform = 'translate(-50%, -50%)';
+                popup.style.left = '50%';
+                popup.style.top = '50%';
+                popup.style.transform = 'translate(-50%, -50%)';
                 
-                document.body.appendChild(message);
+                document.body.appendChild(popup);
                 
                 setTimeout(() => {
-                    document.body.removeChild(message);
+                    document.body.removeChild(popup);
                 }, 1500);
             }
             
-            function startTimer() {
-                clearInterval(timerInterval);
-                timerInterval = setInterval(() => {
-                    if (!gameActive) {
-                        clearInterval(timerInterval);
-                        return;
-                    }
-                    
-                    timer--;
-                    const percentage = (timer / 30) * 100;
-                    timeBarElement.style.width = `${percentage}%`;
-                    
-                    // 時間條顏色變化
-                    if (percentage < 30) {
-                        timeBarElement.style.background = 'linear-gradient(90deg, #e63946, #f72585)';
-                    } else if (percentage < 60) {
-                        timeBarElement.style.background = 'linear-gradient(90deg, #ff9e00, #ffbf00)';
-                    }
-                    
-                    if (timer <= 0) {
-                        clearInterval(timerInterval);
-                        timeUp();
-                    }
-                }, 1000);
-            }
-            
-            function resetTimer() {
-                timer = 30;
-                timeBarElement.style.width = '100%';
-                timeBarElement.style.background = 'linear-gradient(90deg, #4361ee, #4cc9f0)';
-            }
-            
-            function timeUp() {
-                if (!gameActive) return;
-                
-                // 自動算答錯
-                combo = 0;
-                lives--;
-                
-                if (lives <= 0) {
-                    gameOver();
-                } else {
-                    // 顯示正確答案
-                    document.querySelectorAll('.option').forEach(btn => {
-                        if (btn.dataset.answer === correctAnswer) {
-                            btn.classList.add('correct');
-                        }
-                        btn.disabled = true;
-                    });
-                    
-                    nextBtn.disabled = false;
-                    updateUI();
-                }
-            }
-            
-            function gameOver() {
+            function gameComplete() {
                 gameActive = false;
-                clearInterval(timerInterval);
                 
                 // 計算正確率
-                const accuracy = totalQuestions > 0 ? Math.round((correctQuestions / totalQuestions) * 100) : 0;
+                const accuracy = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0;
                 
                 // 更新遊戲結束畫面
                 finalScoreElement.textContent = score;
                 finalLevelElement.textContent = currentLevel;
-                finalComboElement.textContent = combo;
+                finalComboElement.textContent = maxCombo;
                 finalAccuracyElement.textContent = `${accuracy}%`;
                 
                 // 顯示遊戲結束畫面
                 gameOverElement.style.display = 'flex';
             }
             
-            function shuffleArray(array) {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-                return array;
-            }
-            
             // 事件監聽器
             nextBtn.addEventListener('click', function() {
                 if (gameActive) {
                     generateQuestion();
-                    startTimer();
-                }
-            });
-            
-            helpBtn.addEventListener('click', function() {
-                if (!gameActive || !nextBtn.disabled) return;
-                
-                // 隨機排除一個錯誤選項
-                const wrongOptions = Array.from(document.querySelectorAll('.option:not(.correct)'));
-                if (wrongOptions.length > 1) {
-                    const randomIndex = Math.floor(Math.random() * wrongOptions.length);
-                    wrongOptions[randomIndex].style.opacity = '0.3';
-                    wrongOptions[randomIndex].style.pointerEvents = 'none';
-                    
-                    // 扣分
-                    score = Math.max(0, score - 50);
-                    updateUI();
                 }
             });
             
@@ -1185,30 +833,23 @@
                 initGame();
             });
             
-            menuBtn.addEventListener('click', function() {
-                gameOverElement.style.display = 'none';
-                // 這裡可以擴展返回主選單的功能
-                initGame();
-            });
-            
             // 難度選擇
             difficultyBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    // 移除所有active類別
                     difficultyBtns.forEach(b => b.classList.remove('active'));
-                    
-                    // 添加active類別到點擊的按鈕
                     this.classList.add('active');
-                    
-                    // 更新難度
                     difficulty = parseInt(this.dataset.level);
                     
-                    // 重新開始遊戲
-                    if (confirm(`確定切換到${this.textContent}難度？遊戲將會重新開始。`)) {
-                        initGame();
+                    if (gameActive) {
+                        if (confirm(`確定切換到${this.textContent}？當前遊戲進度將會重置。`)) {
+                            initGame();
+                        }
                     }
                 });
             });
+            
+            // 初始生成題目
+            generateQuestion();
         });
     </script>
 </body>
