@@ -3,21 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>音階辨識偵探 - 進階版</title>
+    <title>音階辨識偵探 - 專業教學版</title>
     <style>
         :root {
             --primary: #FF6B6B;
             --secondary: #4ECDC4;
-            --accent: #FFE66D;
-            --bg-gradient: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-            --card-bg: rgba(255, 255, 255, 0.95);
+            --bg-gradient: linear-gradient(135deg, #1e3c72, #2a5298);
+            --card-bg: rgba(255, 255, 255, 0.98);
         }
 
         body {
             font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
             background: var(--bg-gradient);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
             min-height: 100vh;
             margin: 0;
             display: flex;
@@ -26,172 +23,165 @@
             color: #2d3436;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
         .container {
             background: var(--card-bg);
-            backdrop-filter: blur(15px);
             border-radius: 30px;
-            padding: 2.5rem;
-            width: 90%;
+            padding: 2rem;
+            width: 95%;
             max-width: 650px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
             text-align: center;
-            border: 5px solid rgba(255, 255, 255, 0.5);
         }
 
         h1 {
-            color: #1e272e;
-            font-size: 2.8rem;
-            margin: 0;
-            letter-spacing: 2px;
+            color: #2c3e50;
+            font-size: 2.2rem;
+            margin-top: 0;
+            margin-bottom: 15px;
         }
 
-        .difficulty-badge {
+        /* 偵探手冊提示框 */
+        .reference-box {
+            background: #f1f2f6;
+            border-left: 8px solid #341f97;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: left;
             display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
+            width: 90%;
+        }
+
+        .ref-item {
+            font-size: 1.1rem;
+            margin: 5px 0;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .ref-label {
+            display: inline-block;
+            width: 100px;
+            padding: 2px 8px;
+            border-radius: 5px;
+            margin-right: 10px;
+            color: white;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .label-major { background-color: #ff9f43; }
+        .label-penta { background-color: #1dd1a1; }
+
+        .difficulty-status {
             font-weight: bold;
-            margin-bottom: 15px;
+            color: #576574;
+            margin-bottom: 10px;
             font-size: 0.9rem;
         }
-
-        .easy { background: #dff9fb; color: #130f40; }
-        .hard { background: #fab1a0; color: #d63031; }
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin: 20px 0;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .stat-card {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 18px;
+            background: white;
+            padding: 8px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             border: 1px solid #eee;
         }
 
-        .stat-value {
-            display: block;
-            font-size: 1.3rem;
-            font-weight: 900;
-            color: #341f97;
-        }
-
-        .stat-label { font-size: 0.75rem; color: #576574; text-transform: uppercase; }
+        .stat-value { display: block; font-size: 1.1rem; font-weight: 800; color: #341f97; }
+        .stat-label { font-size: 0.7rem; color: #95a5a6; }
 
         #display-area {
-            background: #ffffff;
-            border-radius: 25px;
-            padding: 50px 20px;
-            margin: 25px 0;
-            min-height: 100px;
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 40px 10px;
+            margin: 20px 0;
+            min-height: 80px;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
-            box-shadow: inset 0 5px 15px rgba(0,0,0,0.05);
-            border: 2px solid #f1f2f6;
+            gap: 10px;
+            border: 2px dashed #dfe6e9;
         }
 
         .note-circle {
-            width: 65px;
-            height: 65px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             color: white;
-            font-weight: 800;
-            font-size: 1.4rem;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-            animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            animation: pop 0.3s ease-out forwards;
         }
 
-        @keyframes bounceIn {
-            0% { transform: scale(0.3); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        @keyframes pop {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
-        .btn-group {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 25px;
-        }
+        .btn-group { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
 
         button {
-            padding: 18px 35px;
+            padding: 15px 25px;
             border: none;
-            border-radius: 15px;
-            font-size: 1.2rem;
-            font-weight: 800;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: 0.2s;
         }
 
-        .btn-major { background: linear-gradient(to bottom, #ff9f43, #f39c12); color: white; }
-        .btn-pentatonic { background: linear-gradient(to bottom, #1dd1a1, #10ac84); color: white; }
-        .btn-next { background: #2e86de; color: white; display: none; }
+        .btn-major { background: #ff9f43; color: white; }
+        .btn-pentatonic { background: #1dd1a1; color: white; }
+        .btn-next { background: #54a0ff; color: white; display: none; }
         .btn-restart { background: #ee5253; color: white; margin-top: 20px; }
 
-        button:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        button:active { transform: translateY(-1px); }
+        button:hover { transform: translateY(-2px); opacity: 0.9; }
 
-        #message {
-            font-size: 1.4rem;
-            font-weight: bold;
-            margin: 15px 0;
-            height: 1.5rem;
-        }
-
+        #message { font-size: 1.3rem; font-weight: bold; margin: 15px 0; height: 1.5rem; }
         .hidden { display: none !important; }
-        
-        .rainbow-title {
-            background: linear-gradient(to right, #ef5350, #f48fb1, #7e57c2, #2196f3, #26c6da, #43a047, #eeff41, #f9a825, #ff5722);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 3.5rem;
-            font-weight: 900;
-        }
+
+        .highlight-hint { color: #d63031; font-weight: 900; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div id="play-screen">
-        <div id="difficulty-indicator" class="difficulty-badge easy">入門模式：完整音階</div>
         <h1>音階辨識偵探</h1>
+
+        <div class="reference-box">
+            <div class="difficulty-status" id="mode-text">模式：入門測試</div>
+            <div class="ref-item">
+                <span class="ref-label label-major">大調音階</span> 
+                d r m <span class="highlight-hint">f</span> s l <span class="highlight-hint">t</span> d'
+            </div>
+            <div class="ref-item">
+                <span class="ref-label label-penta">五聲音階</span> 
+                d r m s l d'
+            </div>
+        </div>
         
         <div class="stats-grid">
-            <div class="stat-card">
-                <span class="stat-label">關卡</span>
-                <span class="stat-value" id="level">1</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-label">分數</span>
-                <span class="stat-value" id="score">0</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-label">連擊</span>
-                <span class="stat-value" id="combo">0</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-label">正確</span>
-                <span class="stat-value" id="correct">0</span>
-            </div>
+            <div class="stat-card"><span class="stat-label">關卡</span><span class="stat-value" id="level">1</span></div>
+            <div class="stat-card"><span class="stat-label">分數</span><span class="stat-value" id="score">0</span></div>
+            <div class="stat-card"><span class="stat-label">連擊</span><span class="stat-value" id="combo">0</span></div>
+            <div class="stat-card"><span class="stat-label">正確</span><span class="stat-value" id="correct">0</span></div>
         </div>
 
         <div id="display-area"></div>
-
         <div id="message"></div>
 
         <div class="btn-group" id="action-buttons">
@@ -200,56 +190,33 @@
         </div>
         
         <div class="btn-group">
-            <button class="btn-next" id="next-btn" onclick="nextQuestion()">下一關 ➔</button>
+            <button class="btn-next" id="next-btn" onclick="nextQuestion()">下一題 ➔</button>
         </div>
     </div>
 
     <div id="game-over" class="hidden">
-        <h2 class="rainbow-title">任務完成！</h2>
-        <p style="font-size: 1.2rem;">恭喜偵探，你的表現非常出色！</p>
-        <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
-            <div class="stat-card">
-                <span class="stat-label">最終得分</span>
-                <span class="stat-value" id="final-score">0</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-label">最高連擊</span>
-                <span class="stat-value" id="max-combo">0</span>
-            </div>
-        </div>
-        <button class="btn-restart" onclick="resetGame()">再次接受挑戰</button>
+        <h2 style="font-size: 2.5rem; color: #341f97;">測驗結束！</h2>
+        <p>最終得分：<span id="final-score" style="font-size: 2rem; font-weight: 900; color: #ff6b6b;">0</span></p>
+        <button class="btn-restart" onclick="resetGame()">再挑戰一次</button>
     </div>
 </div>
 
 <script>
     const notesInfo = {
-        'Do': '#eb4d4b', 'Re': '#f0932b', 'Mi': '#f1c40f',
-        'Fa': '#badc58', 'Sol': '#7ed6df', 'La': '#e056fd', 'Ti': '#686de0'
+        'd': '#eb4d4b', 'r': '#f0932b', 'm': '#f1c40f',
+        'f': '#badc58', 's': '#7ed6df', 'l': '#e056fd', 't': '#686de0'
     };
 
-    const majorFull = ['Do', 'Re', 'Mi', 'Fa', 'Sol', 'La', 'Ti'];
-    const pentatonicFull = ['Do', 'Re', 'Mi', 'Sol', 'La'];
+    const majorFull = ['d', 'r', 'm', 'f', 's', 'l', 't'];
+    const pentatonicFull = ['d', 'r', 'm', 's', 'l'];
 
-    let state = {
-        level: 0,
-        score: 0,
-        combo: 0,
-        maxCombo: 0,
-        correctCount: 0,
-        currentAnswer: '',
-        isAnswered: false
-    };
+    let state = { level: 0, score: 0, combo: 0, correctCount: 0, currentAnswer: '', isAnswered: false };
 
-    function shuffle(array) {
-        return array.sort(() => Math.random() - 0.5);
-    }
+    function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
 
     function nextQuestion() {
         state.level++;
-        if (state.level > 10) {
-            showGameOver();
-            return;
-        }
+        if (state.level > 10) { showGameOver(); return; }
 
         state.isAnswered = false;
         document.getElementById('level').innerText = state.level;
@@ -257,39 +224,24 @@
         document.getElementById('next-btn').style.display = 'none';
         document.getElementById('action-buttons').classList.remove('hidden');
 
-        // 更新難度標籤
-        const badge = document.getElementById('difficulty-indicator');
-        if (state.level <= 2) {
-            badge.innerText = "入門模式：完整音階";
-            badge.className = "difficulty-badge easy";
-        } else {
-            badge.innerText = "偵探模式：尋找關鍵音 (Fa/Ti)";
-            badge.className = "difficulty-badge hard";
-        }
-
-        // 生成題目
+        const modeText = document.getElementById('mode-text');
         state.currentAnswer = Math.random() > 0.5 ? 'major' : 'pentatonic';
         let displayNotes = [];
 
         if (state.level <= 2) {
-            // 前兩題顯示完整且順序固定
+            modeText.innerText = "模式：入門 (完整音階順序)";
             displayNotes = state.currentAnswer === 'major' ? [...majorFull] : [...pentatonicFull];
         } else {
-            // 第3題起：顯示 4-5 音，且隨機順序
+            modeText.innerText = "模式：偵探 (隨機抽取音符)";
             const count = Math.random() > 0.5 ? 4 : 5;
-            
             if (state.currentAnswer === 'pentatonic') {
-                // 五聲音階：從 drmsl 隨機抽，絕對沒有 f, t
                 displayNotes = shuffle([...pentatonicFull]).slice(0, count);
             } else {
-                // 大調音階：必須包含 Fa 或 Ti
-                let mustHave = shuffle(['Fa', 'Ti'])[0]; // 隨機選一個必出音
+                let mustHave = shuffle(['f', 't'])[0];
                 let others = majorFull.filter(n => n !== mustHave);
-                displayNotes = [mustHave, ...shuffle(others).slice(0, count - 1)];
+                displayNotes = shuffle([mustHave, ...shuffle(others).slice(0, count - 1)]);
             }
-            displayNotes = shuffle(displayNotes); // 最後再次打亂順序
         }
-
         renderNotes(displayNotes);
     }
 
@@ -310,42 +262,35 @@
     function checkAnswer(choice) {
         if (state.isAnswered) return;
         state.isAnswered = true;
-
         const msg = document.getElementById('message');
         if (choice === state.currentAnswer) {
             state.score += (100 + (state.combo * 20));
             state.correctCount++;
             state.combo++;
-            if (state.combo > state.maxCombo) state.maxCombo = state.combo;
-            msg.innerText = "🎯 偵探判斷正確！";
+            msg.innerText = "✔️ 正確！";
             msg.style.color = "#2ecc71";
         } else {
             state.combo = 0;
-            msg.innerText = "⚠️ 判斷失誤，再觀察一下！";
+            msg.innerText = "❌ 答錯了，請再觀察！";
             msg.style.color = "#e74c3c";
         }
-
         document.getElementById('score').innerText = state.score;
         document.getElementById('combo').innerText = state.combo;
         document.getElementById('correct').innerText = state.correctCount;
-        
         document.getElementById('action-buttons').classList.add('hidden');
         document.getElementById('next-btn').style.display = 'inline-block';
-        if (state.level === 10) document.getElementById('next-btn').innerText = "結算成績";
     }
 
     function showGameOver() {
         document.getElementById('play-screen').classList.add('hidden');
         document.getElementById('game-over').classList.remove('hidden');
         document.getElementById('final-score').innerText = state.score;
-        document.getElementById('max-combo').innerText = state.maxCombo;
     }
 
     function resetGame() {
-        state = { level: 0, score: 0, combo: 0, maxCombo: 0, correctCount: 0, currentAnswer: '', isAnswered: false };
+        state = { level: 0, score: 0, combo: 0, correctCount: 0, currentAnswer: '', isAnswered: false };
         document.getElementById('play-screen').classList.remove('hidden');
         document.getElementById('game-over').classList.add('hidden');
-        document.getElementById('next-btn').innerText = "下一關 ➔";
         nextQuestion();
     }
 
