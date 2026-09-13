@@ -32,10 +32,9 @@
             box-shadow: 0 25px 50px rgba(0,0,0,0.3);
             text-align: center;
             max-height: 95vh;
-            overflow-y: auto; /* 確保內容過多時可以滾動 */
+            overflow-y: auto;
         }
 
-        /* 隱藏滾動條但保留功能 (美觀) */
         .container::-webkit-scrollbar { width: 8px; }
         .container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
 
@@ -43,11 +42,11 @@
             color: #2c3e50;
             font-size: 2.2rem;
             margin-top: 0;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         /* 姓名輸入框 */
-        .name-input-container { margin: 20px 0 30px 0; }
+        .name-input-container { margin: 15px 0; }
         .name-input {
             padding: 12px 20px;
             font-size: 1.2rem;
@@ -64,7 +63,37 @@
             box-shadow: 0 0 10px rgba(52, 31, 151, 0.2);
         }
 
-        /* 偵探手冊提示框 */
+        /* 難度選擇區塊 */
+        .difficulty-section {
+            background: rgba(236, 240, 241, 0.5);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .diff-card {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px;
+            margin-bottom: 10px;
+            border: 2px solid #dfe6e9;
+            border-radius: 10px;
+            cursor: pointer;
+            background: white;
+            transition: 0.2s;
+        }
+        .diff-card:last-child { margin-bottom: 0; }
+        .diff-card input { margin-top: 5px; margin-right: 15px; transform: scale(1.3); cursor: pointer; }
+        .diff-title { font-weight: bold; font-size: 1.05rem; color: #2d3436; margin-bottom: 3px; }
+        .diff-desc { font-size: 0.85rem; color: #636e72; line-height: 1.4; }
+        
+        /* 難度選取時的高亮狀態 */
+        .diff-card.selected-easy { border-color: #2ecc71; background: #e8f8f5; }
+        .diff-card.selected-normal { border-color: #f1c40f; background: #fef9e7; }
+        .diff-card.selected-hard { border-color: #e74c3c; background: #fdedec; }
+
+        /* 遊戲畫面樣式 */
         .reference-box {
             background: #f1f2f6;
             border-left: 8px solid #341f97;
@@ -87,32 +116,12 @@
             font-size: 0.9rem;
             text-align: center;
         }
-
         .label-major { background-color: #ff9f43; }
         .label-penta { background-color: #1dd1a1; }
+        .difficulty-status { font-weight: bold; color: #341f97; margin-bottom: 10px; font-size: 1rem; }
 
-        .difficulty-status {
-            font-weight: bold;
-            color: #576574;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 8px;
-            border-radius: 12px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            border: 1px solid #eee;
-        }
-
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+        .stat-card { background: white; padding: 8px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee; }
         .stat-value { display: block; font-size: 1.1rem; font-weight: 800; color: #341f97; }
         .stat-label { font-size: 0.7rem; color: #95a5a6; }
 
@@ -131,100 +140,43 @@
         }
 
         .note-circle {
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            color: white; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             animation: pop 0.3s ease-out forwards;
         }
-
-        @keyframes pop {
-            from { transform: scale(0.5); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
+        @keyframes pop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         .controls-wrapper { min-height: 60px; margin-top: 20px; display: flex; justify-content: center; align-items: center; }
         .btn-group { display: flex; gap: 15px; justify-content: center; }
-
-        button {
-            padding: 15px 25px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
+        button { padding: 15px 25px; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
         .btn-major { background: #ff9f43; color: white; }
         .btn-pentatonic { background: #1dd1a1; color: white; }
         .btn-next { background: #54a0ff; color: white; }
         .btn-restart { background: #ee5253; color: white; margin: 10px 5px; }
         .btn-clear-lb { background: #bdc3c7; color: #2c3e50; margin: 10px 5px; font-size: 0.9rem; padding: 10px 15px; }
-
         button:hover { transform: translateY(-2px); opacity: 0.9; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-
         #message { font-size: 1.1rem; font-weight: bold; margin: 15px 0; height: 1.5rem; }
         .hidden { display: none !important; }
         .highlight-hint { color: #d63031; font-weight: 900; }
 
-        /* 結算成績單樣式 */
-        .report-card {
-            background: #f8f9fa;
-            border: 3px solid #341f97;
-            border-radius: 20px;
-            padding: 20px;
-            margin: 15px auto;
-            position: relative;
-        }
-        
+        /* 結算成績單與排行榜 */
+        .report-card { background: #f8f9fa; border: 3px solid #341f97; border-radius: 20px; padding: 20px; margin: 15px auto; }
         .report-title { color: #341f97; border-bottom: 2px dashed #b2bec3; padding-bottom: 10px; margin-bottom: 15px; margin-top: 0; }
         .report-details { display: flex; justify-content: space-around; margin-bottom: 10px; }
         .report-item { font-size: 1.1rem; font-weight: bold; }
         .grade-badge { font-size: 3.5rem; font-weight: 900; margin: 5px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
         .comment-text { font-size: 1rem; color: #2d3436; line-height: 1.4; background: white; padding: 15px; border-radius: 10px; box-shadow: inset 0 0 5px rgba(0,0,0,0.05); }
 
-        /* 排行榜樣式 */
-        .leaderboard-section {
-            background: white;
-            border: 2px solid #dfe6e9;
-            border-radius: 15px;
-            padding: 15px;
-            margin: 15px auto;
-            text-align: left;
-        }
-        
-        .leaderboard-title {
-            text-align: center;
-            color: #d35400;
-            font-size: 1.3rem;
-            margin-top: 0;
-            margin-bottom: 10px;
-            font-weight: 900;
-        }
-        
+        .leaderboard-section { background: white; border: 2px solid #dfe6e9; border-radius: 15px; padding: 15px; margin: 15px auto; text-align: left; }
+        .leaderboard-title { text-align: center; color: #d35400; font-size: 1.2rem; margin-top: 0; margin-bottom: 10px; font-weight: 900; }
         .lb-list { list-style: none; padding: 0; margin: 0; }
-        .lb-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 10px;
-            border-bottom: 1px dashed #eee;
-            font-size: 1.1rem;
-        }
+        .lb-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px dashed #eee; font-size: 1rem; }
         .lb-item:last-child { border-bottom: none; }
         .lb-rank-1 { color: #f1c40f; font-weight: bold; font-size: 1.2rem; }
         .lb-rank-2 { color: #bdc3c7; font-weight: bold; font-size: 1.1rem;}
         .lb-rank-3 { color: #cd6133; font-weight: bold; font-size: 1.1rem;}
         .lb-name { flex-grow: 1; margin-left: 10px; font-weight: bold; color: #2c3e50; }
-        .lb-score { font-weight: 900; color: #ff6b6b; }
-        .lb-grade { font-size: 0.8rem; background: #eee; padding: 2px 6px; border-radius: 4px; margin-left: 5px; color: #2c3e50; }
+        .lb-score { font-weight: 900; color: #ff6b6b; margin-left: 10px; }
     </style>
 </head>
 <body>
@@ -233,11 +185,41 @@
     <!-- 首頁畫面 -->
     <div id="start-screen">
         <h1>🎵 音階辨識偵探</h1>
-        <p style="font-size: 1.1rem; color: #576574;">準備好你的耳朵，來挑戰大調與五聲音階的差別吧！</p>
+        <p style="font-size: 1.1rem; color: #576574; margin-bottom: 5px;">準備好你的耳朵，來挑戰大調與五聲音階吧！</p>
         
         <div class="name-input-container">
             <input type="text" id="player-name" class="name-input" placeholder="請輸入你的名字..." maxlength="12">
         </div>
+
+        <!-- 分層難度選擇 -->
+        <div class="difficulty-section">
+            <h3 style="margin: 0 0 10px 0; font-size: 1.1rem; color: #2c3e50;">請選擇挑戰難度：</h3>
+            
+            <label class="diff-card" id="card-easy">
+                <input type="radio" name="difficulty" value="easy" checked onchange="updateDiffUI()">
+                <div>
+                    <div class="diff-title">🟢 入門模式 (x1 分數)</div>
+                    <div class="diff-desc">完整音階順序播放，速度慢。<br>適合剛接觸音階的初學者。</div>
+                </div>
+            </label>
+            
+            <label class="diff-card" id="card-normal">
+                <input type="radio" name="difficulty" value="normal" onchange="updateDiffUI()">
+                <div>
+                    <div class="diff-title">🟡 進階模式 (x1.5 分數)</div>
+                    <div class="diff-desc">隨機抽取 5 個音符，速度中等。<br>順序打亂，考驗觀察力與聽力！</div>
+                </div>
+            </label>
+            
+            <label class="diff-card" id="card-hard">
+                <input type="radio" name="difficulty" value="hard" onchange="updateDiffUI()">
+                <div>
+                    <div class="diff-title">🔴 地獄模式 (x2 分數)</div>
+                    <div class="diff-desc">隨機抽取 4 個音符，速度極快。<br>專為挑戰絕對音感設計！</div>
+                </div>
+            </label>
+        </div>
+
         <button class="btn-next" onclick="startGame()">▶ 開始測驗</button>
     </div>
 
@@ -246,7 +228,7 @@
         <h1 style="font-size: 1.8rem;">音階辨識偵探</h1>
 
         <div class="reference-box">
-            <div class="difficulty-status" id="mode-text">難度：🟢 入門 (完整音階)</div>
+            <div class="difficulty-status" id="mode-text">當前挑戰：🟢 入門模式</div>
             <div class="ref-item">
                 <span class="ref-label label-major">大調</span> d r m <span class="highlight-hint">f</span> s l <span class="highlight-hint">t</span> d'
             </div>
@@ -256,7 +238,7 @@
         </div>
         
         <div class="stats-grid">
-            <div class="stat-card"><span class="stat-label">關卡</span><span class="stat-value" id="level">1</span></div>
+            <div class="stat-card"><span class="stat-label">進度</span><span class="stat-value" id="level">1/10</span></div>
             <div class="stat-card"><span class="stat-label">分數</span><span class="stat-value" id="score">0</span></div>
             <div class="stat-card"><span class="stat-label">連擊</span><span class="stat-value" id="combo">0</span></div>
             <div class="stat-card"><span class="stat-label">時間</span><span class="stat-value" id="timer" style="color: #e15f41;">10s</span></div>
@@ -280,7 +262,6 @@
     <div id="game-over" class="hidden">
         <h2 style="font-size: 1.8rem; color: #2d3436; margin: 0;">測驗結束！</h2>
         
-        <!-- 個人成績單 -->
         <div class="report-card">
             <h3 class="report-title"><span id="report-name">偵探</span> 的專屬評估報告</h3>
             <div class="report-details">
@@ -292,16 +273,13 @@
             <div class="comment-text" id="report-comment">評語加載中...</div>
         </div>
 
-        <!-- 總排行榜 -->
         <div class="leaderboard-section">
             <h3 class="leaderboard-title">🏆 偵探英雄榜 (Top 5)</h3>
-            <ul class="lb-list" id="lb-list">
-                <!-- 排行榜資料會由 JS 生成 -->
-            </ul>
+            <ul class="lb-list" id="lb-list"></ul>
         </div>
 
         <div>
-            <button class="btn-restart" onclick="resetGame()">再次挑戰</button>
+            <button class="btn-restart" onclick="resetGame()">回首頁重新挑戰</button>
             <button class="btn-clear-lb" onclick="clearLeaderboard()">清除紀錄</button>
         </div>
     </div>
@@ -309,23 +287,30 @@
 
 <script>
     const notesInfo = {
-        'd': { color: '#eb4d4b', freq: 261.63 },
-        'r': { color: '#f0932b', freq: 293.66 },
-        'm': { color: '#f1c40f', freq: 329.63 },
-        'f': { color: '#badc58', freq: 349.23 },
-        's': { color: '#7ed6df', freq: 392.00 },
-        'l': { color: '#e056fd', freq: 440.00 },
-        't': { color: '#686de0', freq: 493.88 },
-        "d'": { color: '#ff7979', freq: 523.25 }
+        'd': { color: '#eb4d4b', freq: 261.63 }, 'r': { color: '#f0932b', freq: 293.66 },
+        'm': { color: '#f1c40f', freq: 329.63 }, 'f': { color: '#badc58', freq: 349.23 },
+        's': { color: '#7ed6df', freq: 392.00 }, 'l': { color: '#e056fd', freq: 440.00 },
+        't': { color: '#686de0', freq: 493.88 }, "d'": { color: '#ff7979', freq: 523.25 }
     };
-
     const majorFull = ['d', 'r', 'm', 'f', 's', 'l', 't', "d'"];
     const pentatonicFull = ['d', 'r', 'm', 's', 'l', "d'"];
 
-    let state = { playerName: '神秘偵探', level: 0, score: 0, combo: 0, maxCombo: 0, timeLeft: 10, currentAnswer: '', isAnswered: false };
+    let state = { playerName: '神秘偵探', difficulty: 'easy', level: 0, score: 0, combo: 0, maxCombo: 0, timeLeft: 10, currentAnswer: '', isAnswered: false };
     let renderTimers = []; 
     let audioCtx = null;   
     let countdownTimer = null; 
+
+    // 初始化 UI
+    window.onload = () => { updateDiffUI(); };
+
+    function updateDiffUI() {
+        document.getElementById('card-easy').className = 'diff-card';
+        document.getElementById('card-normal').className = 'diff-card';
+        document.getElementById('card-hard').className = 'diff-card';
+        
+        const diff = document.querySelector('input[name="difficulty"]:checked').value;
+        document.getElementById('card-' + diff).classList.add('selected-' + diff);
+    }
 
     function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
 
@@ -345,6 +330,8 @@
     function startGame() {
         const inputName = document.getElementById('player-name').value.trim();
         state.playerName = inputName !== '' ? inputName : '神秘偵探';
+        state.difficulty = document.querySelector('input[name="difficulty"]:checked').value;
+        
         document.getElementById('start-screen').classList.add('hidden');
         document.getElementById('play-screen').classList.remove('hidden');
         
@@ -358,7 +345,7 @@
         if (state.level > 10) { showGameOver(); return; }
 
         state.isAnswered = false;
-        document.getElementById('level').innerText = state.level;
+        document.getElementById('level').innerText = `${state.level}/10`;
         document.getElementById('message').innerText = '';
         document.getElementById('next-btn-container').classList.add('hidden');
         document.getElementById('action-buttons').classList.remove('hidden');
@@ -369,13 +356,13 @@
         let displayNotes = [];
         let speed = 350; 
 
-        // 分層邏輯
-        if (state.level <= 3) {
-            modeText.innerText = "難度：🟢 入門 (完整音階)";
+        // 根據選擇的難度設定題目
+        if (state.difficulty === 'easy') {
+            modeText.innerText = "當前挑戰：🟢 入門模式";
             displayNotes = state.currentAnswer === 'major' ? [...majorFull] : [...pentatonicFull];
             speed = 400; 
-        } else if (state.level <= 7) {
-            modeText.innerText = "難度：🟡 進階 (隨機 5 音)";
+        } else if (state.difficulty === 'normal') {
+            modeText.innerText = "當前挑戰：🟡 進階模式";
             speed = 250; 
             if (state.currentAnswer === 'pentatonic') {
                 displayNotes = shuffle([...pentatonicFull]).slice(0, 5);
@@ -384,8 +371,8 @@
                 let others = majorFull.filter(n => n !== mustHave);
                 displayNotes = shuffle([mustHave, ...shuffle(others).slice(0, 4)]);
             }
-        } else {
-            modeText.innerText = "難度：🔴 地獄 (隨機 4 音)";
+        } else if (state.difficulty === 'hard') {
+            modeText.innerText = "當前挑戰：🔴 地獄模式";
             speed = 150; 
             if (state.currentAnswer === 'pentatonic') {
                 displayNotes = shuffle([...pentatonicFull]).slice(0, 4);
@@ -460,12 +447,20 @@
         if (choice === state.currentAnswer) {
             state.isAnswered = true; 
             clearInterval(countdownTimer); 
-            let timeBonus = state.timeLeft * 5;
-            state.score += (100 + (state.combo * 20) + timeBonus);
+            
+            // 難度加成計算
+            let diffMultiplier = 1;
+            if(state.difficulty === 'normal') diffMultiplier = 1.5;
+            if(state.difficulty === 'hard') diffMultiplier = 2;
+
+            let baseScore = 100 + (state.combo * 20) + (state.timeLeft * 5);
+            let earnedScore = Math.floor(baseScore * diffMultiplier);
+            
+            state.score += earnedScore;
             state.combo++;
             if (state.combo > state.maxCombo) state.maxCombo = state.combo;
 
-            msg.innerText = `✔️ 正確！ (+${timeBonus} 時間分)`;
+            msg.innerText = `✔️ 正確！ (+${earnedScore} 分)`;
             msg.style.color = "#2ecc71";
             document.getElementById('action-buttons').classList.add('hidden');
             document.getElementById('next-btn-container').classList.remove('hidden');
@@ -492,7 +487,8 @@
         const commentEl = document.getElementById('report-comment');
         let finalGrade = 'C';
         
-        if (state.score >= 1800) {
+        // 評分標準根據難度加成微調
+        if (state.score >= 2000) {
             finalGrade = 'S';
             gradeEl.style.color = '#e1b12c';
             commentEl.innerHTML = "<strong>🏆 首席音樂偵探！</strong><br>你的耳朵跟調音器一樣精準，完全具備絕對音感的潛力！";
@@ -503,34 +499,26 @@
         } else if (state.score >= 600) {
             finalGrade = 'B';
             gradeEl.style.color = '#00a8ff';
-            commentEl.innerHTML = "<strong>🥈 見習音樂偵探！</strong><br>入門很穩定，但在音符變快時有點慌張。多試幾次一定會更好！";
+            commentEl.innerHTML = "<strong>🥈 見習音樂偵探！</strong><br>表現很穩定，但在音符變快時有點慌張。多試幾次一定會更好！";
         } else {
             finalGrade = 'C';
             gradeEl.style.color = '#7f8fa6';
-            commentEl.innerHTML = "<strong>🥉 迷路的音符！</strong><br>別灰心！先在腦海多哼唱幾次「大調」與「五聲」的感覺再來挑戰喔！";
+            commentEl.innerHTML = "<strong>🥉 迷路的音符！</strong><br>別灰心！先在腦海多哼唱幾次「大調」與「五聲」的感覺，從入門難度慢慢挑戰喔！";
         }
         
         gradeEl.innerText = finalGrade;
         
         // 儲存並更新排行榜
-        updateLeaderboard(state.playerName, state.score, finalGrade);
+        updateLeaderboard(state.playerName, state.score, finalGrade, state.difficulty);
     }
 
-    function updateLeaderboard(name, score, grade) {
-        // 從瀏覽器本地儲存讀取排行榜 (如果沒有則建立空陣列)
+    function updateLeaderboard(name, score, grade, difficulty) {
         let lb = JSON.parse(localStorage.getItem('scaleDetectiveLB')) || [];
+        lb.push({ name: name, score: score, grade: grade, diff: difficulty });
         
-        // 加入新成績
-        lb.push({ name: name, score: score, grade: grade });
-        
-        // 依照分數由高到低排序，並只取前 5 名
         lb.sort((a, b) => b.score - a.score);
-        lb = lb.slice(0, 5);
-        
-        // 存回本地
+        lb = lb.slice(0, 5); // 只留前五名
         localStorage.setItem('scaleDetectiveLB', JSON.stringify(lb));
-        
-        // 渲染排行榜畫面
         renderLeaderboardHTML(lb);
     }
 
@@ -543,6 +531,8 @@
             return;
         }
 
+        const diffMap = { 'easy': '🟢入門', 'normal': '🟡進階', 'hard': '🔴地獄' };
+
         lb.forEach((entry, index) => {
             let rankIcon = '';
             let rankClass = '';
@@ -551,13 +541,16 @@
             else if(index === 2) { rankIcon = '🥉'; rankClass = 'lb-rank-3'; }
             else { rankIcon = `<span style="display:inline-block; width:1.5rem; text-align:center;">${index+1}</span>`; }
 
+            let diffText = entry.diff ? diffMap[entry.diff] : '🟢入門';
+
             listEl.innerHTML += `
                 <li class="lb-item">
                     <span class="${rankClass}">${rankIcon}</span>
                     <span class="lb-name">${entry.name}</span>
-                    <div>
+                    <div style="display: flex; align-items: center;">
+                        <span style="font-size: 0.75rem; background: #f1f2f6; padding: 2px 6px; border-radius: 4px; color: #576574; margin-right: 8px;">${diffText}</span>
                         <span class="lb-score">${entry.score}</span>
-                        <span class="lb-grade">${entry.grade}</span>
+                        <span style="font-size: 0.8rem; background: #eee; padding: 2px 6px; border-radius: 4px; margin-left: 5px; color: #2c3e50;">${entry.grade}</span>
                     </div>
                 </li>
             `;
@@ -573,11 +566,12 @@
 
     function resetGame() {
         const keepName = state.playerName;
-        state = { playerName: keepName, level: 0, score: 0, combo: 0, maxCombo: 0, timeLeft: 10, currentAnswer: '', isAnswered: false };
+        state = { playerName: keepName, difficulty: 'easy', level: 0, score: 0, combo: 0, maxCombo: 0, timeLeft: 10, currentAnswer: '', isAnswered: false };
         clearInterval(countdownTimer);
         document.getElementById('start-screen').classList.remove('hidden');
         document.getElementById('game-over').classList.add('hidden');
         document.getElementById('player-name').value = keepName === '神秘偵探' ? '' : keepName;
+        updateDiffUI();
     }
 </script>
 
