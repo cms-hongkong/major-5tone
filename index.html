@@ -31,7 +31,13 @@
             max-width: 650px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.3);
             text-align: center;
+            max-height: 95vh;
+            overflow-y: auto; /* 確保內容過多時可以滾動 */
         }
+
+        /* 隱藏滾動條但保留功能 (美觀) */
+        .container::-webkit-scrollbar { width: 8px; }
+        .container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
 
         h1 {
             color: #2c3e50;
@@ -41,10 +47,7 @@
         }
 
         /* 姓名輸入框 */
-        .name-input-container {
-            margin: 20px 0 30px 0;
-        }
-        
+        .name-input-container { margin: 20px 0 30px 0; }
         .name-input {
             padding: 12px 20px;
             font-size: 1.2rem;
@@ -56,7 +59,6 @@
             outline: none;
             transition: 0.3s;
         }
-        
         .name-input:focus {
             border-color: #341f97;
             box-shadow: 0 0 10px rgba(52, 31, 151, 0.2);
@@ -74,13 +76,7 @@
             width: 90%;
         }
 
-        .ref-item {
-            font-size: 1.1rem;
-            margin: 5px 0;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
+        .ref-item { font-size: 1.1rem; margin: 5px 0; font-weight: 600; letter-spacing: 1px; }
         .ref-label {
             display: inline-block;
             width: 100px;
@@ -153,14 +149,7 @@
             to { transform: scale(1); opacity: 1; }
         }
 
-        .controls-wrapper {
-            min-height: 60px;
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
+        .controls-wrapper { min-height: 60px; margin-top: 20px; display: flex; justify-content: center; align-items: center; }
         .btn-group { display: flex; gap: 15px; justify-content: center; }
 
         button {
@@ -176,7 +165,8 @@
         .btn-major { background: #ff9f43; color: white; }
         .btn-pentatonic { background: #1dd1a1; color: white; }
         .btn-next { background: #54a0ff; color: white; }
-        .btn-restart { background: #ee5253; color: white; margin-top: 20px; }
+        .btn-restart { background: #ee5253; color: white; margin: 10px 5px; }
+        .btn-clear-lb { background: #bdc3c7; color: #2c3e50; margin: 10px 5px; font-size: 0.9rem; padding: 10px 15px; }
 
         button:hover { transform: translateY(-2px); opacity: 0.9; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
 
@@ -190,45 +180,51 @@
             border: 3px solid #341f97;
             border-radius: 20px;
             padding: 20px;
-            margin: 20px auto;
-            max-width: 500px;
+            margin: 15px auto;
             position: relative;
         }
         
-        .report-title {
-            color: #341f97;
-            border-bottom: 2px dashed #b2bec3;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .report-details {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 20px;
-        }
-        
-        .report-item {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-        
-        .grade-badge {
-            font-size: 4rem;
-            font-weight: 900;
-            margin: 10px 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
+        .report-title { color: #341f97; border-bottom: 2px dashed #b2bec3; padding-bottom: 10px; margin-bottom: 15px; margin-top: 0; }
+        .report-details { display: flex; justify-content: space-around; margin-bottom: 10px; }
+        .report-item { font-size: 1.1rem; font-weight: bold; }
+        .grade-badge { font-size: 3.5rem; font-weight: 900; margin: 5px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .comment-text { font-size: 1rem; color: #2d3436; line-height: 1.4; background: white; padding: 15px; border-radius: 10px; box-shadow: inset 0 0 5px rgba(0,0,0,0.05); }
 
-        .comment-text {
-            font-size: 1.1rem;
-            color: #2d3436;
-            line-height: 1.5;
+        /* 排行榜樣式 */
+        .leaderboard-section {
             background: white;
+            border: 2px solid #dfe6e9;
+            border-radius: 15px;
             padding: 15px;
-            border-radius: 10px;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+            margin: 15px auto;
+            text-align: left;
         }
+        
+        .leaderboard-title {
+            text-align: center;
+            color: #d35400;
+            font-size: 1.3rem;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-weight: 900;
+        }
+        
+        .lb-list { list-style: none; padding: 0; margin: 0; }
+        .lb-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            border-bottom: 1px dashed #eee;
+            font-size: 1.1rem;
+        }
+        .lb-item:last-child { border-bottom: none; }
+        .lb-rank-1 { color: #f1c40f; font-weight: bold; font-size: 1.2rem; }
+        .lb-rank-2 { color: #bdc3c7; font-weight: bold; font-size: 1.1rem;}
+        .lb-rank-3 { color: #cd6133; font-weight: bold; font-size: 1.1rem;}
+        .lb-name { flex-grow: 1; margin-left: 10px; font-weight: bold; color: #2c3e50; }
+        .lb-score { font-weight: 900; color: #ff6b6b; }
+        .lb-grade { font-size: 0.8rem; background: #eee; padding: 2px 6px; border-radius: 4px; margin-left: 5px; color: #2c3e50; }
     </style>
 </head>
 <body>
@@ -237,29 +233,25 @@
     <!-- 首頁畫面 -->
     <div id="start-screen">
         <h1>🎵 音階辨識偵探</h1>
-        <p style="font-size: 1.2rem; color: #576574;">準備好你的耳朵，來挑戰大調與五聲音階的差別吧！</p>
+        <p style="font-size: 1.1rem; color: #576574;">準備好你的耳朵，來挑戰大調與五聲音階的差別吧！</p>
         
-        <!-- 姓名輸入區 -->
         <div class="name-input-container">
             <input type="text" id="player-name" class="name-input" placeholder="請輸入你的名字..." maxlength="12">
         </div>
-
         <button class="btn-next" onclick="startGame()">▶ 開始測驗</button>
     </div>
 
     <!-- 遊戲主畫面 -->
     <div id="play-screen" class="hidden">
-        <h1>音階辨識偵探</h1>
+        <h1 style="font-size: 1.8rem;">音階辨識偵探</h1>
 
         <div class="reference-box">
             <div class="difficulty-status" id="mode-text">難度：🟢 入門 (完整音階)</div>
             <div class="ref-item">
-                <span class="ref-label label-major">大調音階</span> 
-                d r m <span class="highlight-hint">f</span> s l <span class="highlight-hint">t</span> d'
+                <span class="ref-label label-major">大調</span> d r m <span class="highlight-hint">f</span> s l <span class="highlight-hint">t</span> d'
             </div>
             <div class="ref-item">
-                <span class="ref-label label-penta">五聲音階</span> 
-                d r m s l d'
+                <span class="ref-label label-penta">五聲</span> d r m s l d'
             </div>
         </div>
         
@@ -284,27 +276,34 @@
         </div>
     </div>
 
-    <!-- 結算成績單畫面 -->
+    <!-- 結算成績單與排行榜畫面 -->
     <div id="game-over" class="hidden">
-        <h2 style="font-size: 2rem; color: #2d3436; margin-top: 0;">測驗結束！</h2>
+        <h2 style="font-size: 1.8rem; color: #2d3436; margin: 0;">測驗結束！</h2>
         
+        <!-- 個人成績單 -->
         <div class="report-card">
             <h3 class="report-title"><span id="report-name">偵探</span> 的專屬評估報告</h3>
-            
             <div class="report-details">
-                <div class="report-item">最終得分<br><span id="final-score" style="color: #ff6b6b; font-size: 1.8rem;">0</span></div>
-                <div class="report-item">最高連擊<br><span id="final-max-combo" style="color: #4ECDC4; font-size: 1.8rem;">0</span></div>
+                <div class="report-item">最終得分<br><span id="final-score" style="color: #ff6b6b; font-size: 1.5rem;">0</span></div>
+                <div class="report-item">最高連擊<br><span id="final-max-combo" style="color: #4ECDC4; font-size: 1.5rem;">0</span></div>
             </div>
-
             <div>綜合評級</div>
             <div class="grade-badge" id="report-grade">A</div>
-            
-            <div class="comment-text" id="report-comment">
-                這裡會顯示老師的評語。
-            </div>
+            <div class="comment-text" id="report-comment">評語加載中...</div>
         </div>
 
-        <button class="btn-restart" onclick="resetGame()">再次挑戰</button>
+        <!-- 總排行榜 -->
+        <div class="leaderboard-section">
+            <h3 class="leaderboard-title">🏆 偵探英雄榜 (Top 5)</h3>
+            <ul class="lb-list" id="lb-list">
+                <!-- 排行榜資料會由 JS 生成 -->
+            </ul>
+        </div>
+
+        <div>
+            <button class="btn-restart" onclick="resetGame()">再次挑戰</button>
+            <button class="btn-clear-lb" onclick="clearLeaderboard()">清除紀錄</button>
+        </div>
     </div>
 </div>
 
@@ -323,17 +322,7 @@
     const majorFull = ['d', 'r', 'm', 'f', 's', 'l', 't', "d'"];
     const pentatonicFull = ['d', 'r', 'm', 's', 'l', "d'"];
 
-    // 狀態新增了 playerName 與 maxCombo
-    let state = { 
-        playerName: '神秘偵探',
-        level: 0, 
-        score: 0, 
-        combo: 0, 
-        maxCombo: 0,
-        timeLeft: 10, 
-        currentAnswer: '', 
-        isAnswered: false 
-    };
+    let state = { playerName: '神秘偵探', level: 0, score: 0, combo: 0, maxCombo: 0, timeLeft: 10, currentAnswer: '', isAnswered: false };
     let renderTimers = []; 
     let audioCtx = null;   
     let countdownTimer = null; 
@@ -344,30 +333,23 @@
         if (!audioCtx) return;
         const oscillator = audioCtx.createOscillator();
         const gainNode = audioCtx.createGain();
-        
         oscillator.type = 'sine';
         oscillator.frequency.value = frequency;
-        
         oscillator.connect(gainNode);
         gainNode.connect(audioCtx.destination);
-        
         oscillator.start();
         gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.6);
         oscillator.stop(audioCtx.currentTime + 0.6);
     }
 
     function startGame() {
-        // 抓取玩家輸入的名字
         const inputName = document.getElementById('player-name').value.trim();
         state.playerName = inputName !== '' ? inputName : '神秘偵探';
-
         document.getElementById('start-screen').classList.add('hidden');
         document.getElementById('play-screen').classList.remove('hidden');
         
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
         nextQuestion();
     }
 
@@ -378,7 +360,6 @@
         state.isAnswered = false;
         document.getElementById('level').innerText = state.level;
         document.getElementById('message').innerText = '';
-        
         document.getElementById('next-btn-container').classList.add('hidden');
         document.getElementById('action-buttons').classList.remove('hidden');
 
@@ -388,6 +369,7 @@
         let displayNotes = [];
         let speed = 350; 
 
+        // 分層邏輯
         if (state.level <= 3) {
             modeText.innerText = "難度：🟢 入門 (完整音階)";
             displayNotes = state.currentAnswer === 'major' ? [...majorFull] : [...pentatonicFull];
@@ -403,7 +385,7 @@
                 displayNotes = shuffle([mustHave, ...shuffle(others).slice(0, 4)]);
             }
         } else {
-            modeText.innerText = "難度：🔴 地獄 (隨機 4 音，極速)";
+            modeText.innerText = "難度：🔴 地獄 (隨機 4 音)";
             speed = 150; 
             if (state.currentAnswer === 'pentatonic') {
                 displayNotes = shuffle([...pentatonicFull]).slice(0, 4);
@@ -413,14 +395,12 @@
                 displayNotes = shuffle([mustHave, ...shuffle(others).slice(0, 3)]);
             }
         }
-        
         renderNotes(displayNotes, speed);
     }
 
     function renderNotes(notes, speed) {
         const area = document.getElementById('display-area');
         area.innerHTML = '';
-        
         renderTimers.forEach(timer => clearTimeout(timer));
         renderTimers = [];
         clearInterval(countdownTimer); 
@@ -453,22 +433,11 @@
         timerDisplay.style.color = "#2ecc71"; 
         
         countdownTimer = setInterval(() => {
-            if (state.isAnswered) {
-                clearInterval(countdownTimer);
-                return;
-            }
-            
+            if (state.isAnswered) { clearInterval(countdownTimer); return; }
             state.timeLeft--;
             timerDisplay.innerText = state.timeLeft + 's';
-            
-            if (state.timeLeft <= 3) {
-                timerDisplay.style.color = "#e74c3c"; 
-            }
-            
-            if (state.timeLeft <= 0) {
-                clearInterval(countdownTimer);
-                timeOut();
-            }
+            if (state.timeLeft <= 3) timerDisplay.style.color = "#e74c3c"; 
+            if (state.timeLeft <= 0) { clearInterval(countdownTimer); timeOut(); }
         }, 1000);
     }
 
@@ -476,11 +445,9 @@
         if (state.isAnswered) return;
         state.isAnswered = true;
         state.combo = 0;
-        
         const msg = document.getElementById('message');
         msg.innerText = "⏰ 時間到！未作答";
         msg.style.color = "#e74c3c";
-        
         document.getElementById('combo').innerText = state.combo;
         document.getElementById('action-buttons').classList.add('hidden');
         document.getElementById('next-btn-container').classList.remove('hidden');
@@ -488,25 +455,18 @@
 
     function checkAnswer(choice) {
         if (state.isAnswered) return;
-        
         const msg = document.getElementById('message');
         
         if (choice === state.currentAnswer) {
             state.isAnswered = true; 
             clearInterval(countdownTimer); 
-
             let timeBonus = state.timeLeft * 5;
             state.score += (100 + (state.combo * 20) + timeBonus);
             state.combo++;
-            
-            // 紀錄最大連擊
-            if (state.combo > state.maxCombo) {
-                state.maxCombo = state.combo;
-            }
+            if (state.combo > state.maxCombo) state.maxCombo = state.combo;
 
-            msg.innerText = `✔️ 正確！ (時間紅利 +${timeBonus})`;
+            msg.innerText = `✔️ 正確！ (+${timeBonus} 時間分)`;
             msg.style.color = "#2ecc71";
-            
             document.getElementById('action-buttons').classList.add('hidden');
             document.getElementById('next-btn-container').classList.remove('hidden');
         } else {
@@ -519,50 +479,104 @@
         document.getElementById('combo').innerText = state.combo;
     }
 
+    /* ====== 結算與排行榜系統 ====== */
     function showGameOver() {
         document.getElementById('play-screen').classList.add('hidden');
         document.getElementById('game-over').classList.remove('hidden');
         
-        // 填入成績單資料
         document.getElementById('report-name').innerText = state.playerName;
         document.getElementById('final-score').innerText = state.score;
         document.getElementById('final-max-combo').innerText = state.maxCombo;
 
-        // 評分與評語系統
         const gradeEl = document.getElementById('report-grade');
         const commentEl = document.getElementById('report-comment');
+        let finalGrade = 'C';
         
         if (state.score >= 1800) {
-            gradeEl.innerText = 'S';
-            gradeEl.style.color = '#e1b12c'; // 金色
-            commentEl.innerHTML = "<strong>🏆 首席音樂偵探！</strong><br>太神了！你的耳朵跟調音器一樣精準，即使在「地獄難度」也能立刻抓出關鍵音符，完全具備絕對音感的潛力！";
+            finalGrade = 'S';
+            gradeEl.style.color = '#e1b12c';
+            commentEl.innerHTML = "<strong>🏆 首席音樂偵探！</strong><br>你的耳朵跟調音器一樣精準，完全具備絕對音感的潛力！";
         } else if (state.score >= 1200) {
-            gradeEl.innerText = 'A';
-            gradeEl.style.color = '#e84118'; // 紅色
-            commentEl.innerHTML = "<strong>🥇 高級音階調查員！</strong><br>非常厲害！你已經能輕鬆分辨大調中的 Fa 和 Ti 與五聲音階的差別了。反應速度也很棒，繼續保持！";
+            finalGrade = 'A';
+            gradeEl.style.color = '#e84118';
+            commentEl.innerHTML = "<strong>🥇 高級音階調查員！</strong><br>能輕鬆分辨大調與五聲音階，反應速度也很棒，繼續保持！";
         } else if (state.score >= 600) {
-            gradeEl.innerText = 'B';
-            gradeEl.style.color = '#00a8ff'; // 藍色
-            commentEl.innerHTML = "<strong>🥈 見習音樂偵探！</strong><br>表現不錯喔！你在入門階段很穩定，但在音符隨機跳躍、速度變快時可能會有點慌張。多試幾次一定會更好！";
+            finalGrade = 'B';
+            gradeEl.style.color = '#00a8ff';
+            commentEl.innerHTML = "<strong>🥈 見習音樂偵探！</strong><br>入門很穩定，但在音符變快時有點慌張。多試幾次一定會更好！";
         } else {
-            gradeEl.innerText = 'C';
-            gradeEl.style.color = '#7f8fa6'; // 灰色
-            commentEl.innerHTML = "<strong>🥉 迷路的音符！</strong><br>別灰心！辨識音階需要一點時間讓耳朵習慣。建議可以先在腦海中多哼唱幾次「大調」與「五聲音階」的感覺，再來挑戰喔！";
+            finalGrade = 'C';
+            gradeEl.style.color = '#7f8fa6';
+            commentEl.innerHTML = "<strong>🥉 迷路的音符！</strong><br>別灰心！先在腦海多哼唱幾次「大調」與「五聲」的感覺再來挑戰喔！";
+        }
+        
+        gradeEl.innerText = finalGrade;
+        
+        // 儲存並更新排行榜
+        updateLeaderboard(state.playerName, state.score, finalGrade);
+    }
+
+    function updateLeaderboard(name, score, grade) {
+        // 從瀏覽器本地儲存讀取排行榜 (如果沒有則建立空陣列)
+        let lb = JSON.parse(localStorage.getItem('scaleDetectiveLB')) || [];
+        
+        // 加入新成績
+        lb.push({ name: name, score: score, grade: grade });
+        
+        // 依照分數由高到低排序，並只取前 5 名
+        lb.sort((a, b) => b.score - a.score);
+        lb = lb.slice(0, 5);
+        
+        // 存回本地
+        localStorage.setItem('scaleDetectiveLB', JSON.stringify(lb));
+        
+        // 渲染排行榜畫面
+        renderLeaderboardHTML(lb);
+    }
+
+    function renderLeaderboardHTML(lb) {
+        const listEl = document.getElementById('lb-list');
+        listEl.innerHTML = '';
+        
+        if(lb.length === 0) {
+            listEl.innerHTML = '<li style="text-align:center; color:#95a5a6; padding: 10px;">目前尚無紀錄，快來搶頭香！</li>';
+            return;
+        }
+
+        lb.forEach((entry, index) => {
+            let rankIcon = '';
+            let rankClass = '';
+            if(index === 0) { rankIcon = '🥇'; rankClass = 'lb-rank-1'; }
+            else if(index === 1) { rankIcon = '🥈'; rankClass = 'lb-rank-2'; }
+            else if(index === 2) { rankIcon = '🥉'; rankClass = 'lb-rank-3'; }
+            else { rankIcon = `<span style="display:inline-block; width:1.5rem; text-align:center;">${index+1}</span>`; }
+
+            listEl.innerHTML += `
+                <li class="lb-item">
+                    <span class="${rankClass}">${rankIcon}</span>
+                    <span class="lb-name">${entry.name}</span>
+                    <div>
+                        <span class="lb-score">${entry.score}</span>
+                        <span class="lb-grade">${entry.grade}</span>
+                    </div>
+                </li>
+            `;
+        });
+    }
+
+    function clearLeaderboard() {
+        if(confirm("確定要清除所有學生的成績紀錄嗎？")) {
+            localStorage.removeItem('scaleDetectiveLB');
+            renderLeaderboardHTML([]);
         }
     }
 
     function resetGame() {
-        // 重置數值，但保留玩家名字
         const keepName = state.playerName;
-        state = { 
-            playerName: keepName,
-            level: 0, score: 0, combo: 0, maxCombo: 0, timeLeft: 10, currentAnswer: '', isAnswered: false 
-        };
+        state = { playerName: keepName, level: 0, score: 0, combo: 0, maxCombo: 0, timeLeft: 10, currentAnswer: '', isAnswered: false };
         clearInterval(countdownTimer);
         document.getElementById('start-screen').classList.remove('hidden');
         document.getElementById('game-over').classList.add('hidden');
-        
-        // 將名字填回輸入框
         document.getElementById('player-name').value = keepName === '神秘偵探' ? '' : keepName;
     }
 </script>
