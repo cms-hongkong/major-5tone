@@ -131,7 +131,15 @@
             to { transform: scale(1); opacity: 1; }
         }
 
-        .btn-group { display: flex; gap: 15px; justify-content: center; margin-top: 20px; }
+        .controls-wrapper {
+            min-height: 60px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-group { display: flex; gap: 15px; justify-content: center; }
 
         button {
             padding: 15px 25px;
@@ -145,21 +153,28 @@
 
         .btn-major { background: #ff9f43; color: white; }
         .btn-pentatonic { background: #1dd1a1; color: white; }
-        .btn-next { background: #54a0ff; color: white; display: none; }
+        .btn-next { background: #54a0ff; color: white; }
         .btn-restart { background: #ee5253; color: white; margin-top: 20px; }
 
-        button:hover { transform: translateY(-2px); opacity: 0.9; }
+        button:hover { transform: translateY(-2px); opacity: 0.9; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
 
         #message { font-size: 1.3rem; font-weight: bold; margin: 15px 0; height: 1.5rem; }
         .hidden { display: none !important; }
-
         .highlight-hint { color: #d63031; font-weight: 900; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="play-screen">
+    <!-- 首頁畫面 (確保使用者互動後才能啟動聲音) -->
+    <div id="start-screen">
+        <h1>🎵 音階辨識偵探</h1>
+        <p style="font-size: 1.2rem; color: #576574; margin-bottom: 30px;">準備好你的耳朵，來挑戰大調與五聲音階的差別吧！</p>
+        <button class="btn-next" onclick="startGame()">▶ 開始測驗</button>
+    </div>
+
+    <!-- 遊戲主畫面 -->
+    <div id="play-screen" class="hidden">
         <h1>音階辨識偵探</h1>
 
         <div class="reference-box">
@@ -184,16 +199,19 @@
         <div id="display-area"></div>
         <div id="message"></div>
 
-        <div class="btn-group" id="action-buttons">
-            <button class="btn-major" onclick="checkAnswer('major')">大調音階</button>
-            <button class="btn-pentatonic" onclick="checkAnswer('pentatonic')">五聲音階</button>
-        </div>
-        
-        <div class="btn-group">
-            <button class="btn-next" id="next-btn" onclick="nextQuestion()">下一題 ➔</button>
+        <!-- 按鈕區使用外掛 wrapper 避免跳動 -->
+        <div class="controls-wrapper">
+            <div class="btn-group" id="action-buttons">
+                <button class="btn-major" onclick="checkAnswer('major')">大調音階</button>
+                <button class="btn-pentatonic" onclick="checkAnswer('pentatonic')">五聲音階</button>
+            </div>
+            <div class="btn-group hidden" id="next-btn-container">
+                <button class="btn-next" id="next-btn" onclick="nextQuestion()">下一題 ➔</button>
+            </div>
         </div>
     </div>
 
+    <!-- 結算畫面 -->
     <div id="game-over" class="hidden">
         <h2 style="font-size: 2.5rem; color: #341f97;">測驗結束！</h2>
         <p>最終得分：<span id="final-score" style="font-size: 2rem; font-weight: 900; color: #ff6b6b;">0</span></p>
@@ -202,17 +220,57 @@
 </div>
 
 <script>
+    // 包含顏色與音高頻率 (C4 - C5)
     const notesInfo = {
-        'd': '#eb4d4b', 'r': '#f0932b', 'm': '#f1c40f',
-        'f': '#badc58', 's': '#7ed6df', 'l': '#e056fd', 't': '#686de0'
+        'd': { color: '#eb4d4b', freq: 261.63 },
+        'r': { color: '#f0932b', freq: 293.66 },
+        'm': { color: '#f1c40f', freq: 329.63 },
+        'f': { color: '#badc58', freq: 349.23 },
+        's': { color: '#7ed6df', freq: 392.00 },
+        'l': { color: '#e056fd', freq: 440.00 },
+        't': { color: '#686de0', freq: 493.88 },
+        "d'": { color: '#ff7979', freq: 523.25 }
     };
 
-    const majorFull = ['d', 'r', 'm', 'f', 's', 'l', 't'];
-    const pentatonicFull = ['d', 'r', 'm', 's', 'l'];
+    const majorFull = ['d', 'r', 'm', 'f', 's', 'l', 't', "d'"];
+    const pentatonicFull = ['d', 'r', 'm', 's', 'l', "d'"];
 
     let state = { level: 0, score: 0, combo: 0, correctCount: 0, currentAnswer: '', isAnswered: false };
+    let renderTimers = []; // 用來清除快速點擊時殘留的定時器
+    let audioCtx = null;   // 音效 API
 
     function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
+
+    // 播放音符聲音
+    function playTone(frequency) {
+        if (!audioCtx) return;
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        
+        oscillator.type = 'sine';
+        oscillator.frequency.value = frequency;
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        
+        oscillator.start();
+        // 讓聲音有自然的淡出效果
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.6);
+        oscillator.stop(audioCtx.currentTime + 0.6);
+    }
+
+    function startGame() {
+        document.getElementById('start-screen').classList.add('hidden');
+        document.getElementById('play-screen').classList.remove('hidden');
+        
+        // 啟動瀏覽器 AudioContext (必須在使用者點擊按鈕時觸發)
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        
+        nextQuestion();
+    }
 
     function nextQuestion() {
         state.level++;
@@ -221,7 +279,9 @@
         state.isAnswered = false;
         document.getElementById('level').innerText = state.level;
         document.getElementById('message').innerText = '';
-        document.getElementById('next-btn').style.display = 'none';
+        
+        // UI 切換
+        document.getElementById('next-btn-container').classList.add('hidden');
         document.getElementById('action-buttons').classList.remove('hidden');
 
         const modeText = document.getElementById('mode-text');
@@ -233,11 +293,11 @@
             displayNotes = state.currentAnswer === 'major' ? [...majorFull] : [...pentatonicFull];
         } else {
             modeText.innerText = "模式：偵探 (隨機抽取音符)";
-            const count = Math.random() > 0.5 ? 4 : 5;
+            const count = Math.random() > 0.5 ? 4 : 5; // 隨機抽 4 或 5 個音
             if (state.currentAnswer === 'pentatonic') {
                 displayNotes = shuffle([...pentatonicFull]).slice(0, count);
             } else {
-                let mustHave = shuffle(['f', 't'])[0];
+                let mustHave = shuffle(['f', 't'])[0]; // 大調必含 f 或 t
                 let others = majorFull.filter(n => n !== mustHave);
                 displayNotes = shuffle([mustHave, ...shuffle(others).slice(0, count - 1)]);
             }
@@ -248,37 +308,56 @@
     function renderNotes(notes) {
         const area = document.getElementById('display-area');
         area.innerHTML = '';
+        
+        // 預防玩家瘋狂點擊下一題：清除先前的定時器
+        renderTimers.forEach(timer => clearTimeout(timer));
+        renderTimers = [];
+
         notes.forEach((note, i) => {
-            setTimeout(() => {
+            let timer = setTimeout(() => {
                 const div = document.createElement('div');
                 div.className = 'note-circle';
-                div.style.backgroundColor = notesInfo[note];
+                div.style.backgroundColor = notesInfo[note].color;
                 div.innerText = note;
                 area.appendChild(div);
-            }, i * 100);
+                
+                // 播放音高
+                playTone(notesInfo[note].freq);
+                
+            }, i * 350); // 將間隔拉長到 350ms，讓聲音聽得更清楚
+            renderTimers.push(timer);
         });
     }
 
     function checkAnswer(choice) {
         if (state.isAnswered) return;
-        state.isAnswered = true;
+        
         const msg = document.getElementById('message');
+        
         if (choice === state.currentAnswer) {
+            // 答對邏輯
+            state.isAnswered = true; // 鎖定作答
             state.score += (100 + (state.combo * 20));
             state.correctCount++;
             state.combo++;
             msg.innerText = "✔️ 正確！";
             msg.style.color = "#2ecc71";
+            
+            // 切換按鈕
+            document.getElementById('action-buttons').classList.add('hidden');
+            document.getElementById('next-btn-container').classList.remove('hidden');
+            
         } else {
+            // 答錯邏輯 (允許重試)
             state.combo = 0;
-            msg.innerText = "❌ 答錯了，請再觀察！";
+            msg.innerText = "❌ 答錯了，請再試一次！";
             msg.style.color = "#e74c3c";
+            // 注意：這裡不設定 isAnswered = true，也不隱藏作答按鈕，讓玩家可以按另一個選項
         }
+        
         document.getElementById('score').innerText = state.score;
         document.getElementById('combo').innerText = state.combo;
         document.getElementById('correct').innerText = state.correctCount;
-        document.getElementById('action-buttons').classList.add('hidden');
-        document.getElementById('next-btn').style.display = 'inline-block';
     }
 
     function showGameOver() {
@@ -289,12 +368,9 @@
 
     function resetGame() {
         state = { level: 0, score: 0, combo: 0, correctCount: 0, currentAnswer: '', isAnswered: false };
-        document.getElementById('play-screen').classList.remove('hidden');
+        document.getElementById('start-screen').classList.remove('hidden');
         document.getElementById('game-over').classList.add('hidden');
-        nextQuestion();
     }
-
-    window.onload = nextQuestion;
 </script>
 
 </body>
