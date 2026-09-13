@@ -40,6 +40,28 @@
             margin-bottom: 15px;
         }
 
+        /* 姓名輸入框 */
+        .name-input-container {
+            margin: 20px 0 30px 0;
+        }
+        
+        .name-input {
+            padding: 12px 20px;
+            font-size: 1.2rem;
+            border: 2px solid #dfe6e9;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+            outline: none;
+            transition: 0.3s;
+        }
+        
+        .name-input:focus {
+            border-color: #341f97;
+            box-shadow: 0 0 10px rgba(52, 31, 151, 0.2);
+        }
+
         /* 偵探手冊提示框 */
         .reference-box {
             background: #f1f2f6;
@@ -158,18 +180,70 @@
 
         button:hover { transform: translateY(-2px); opacity: 0.9; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
 
-        #message { font-size: 1.3rem; font-weight: bold; margin: 15px 0; height: 1.5rem; }
+        #message { font-size: 1.1rem; font-weight: bold; margin: 15px 0; height: 1.5rem; }
         .hidden { display: none !important; }
         .highlight-hint { color: #d63031; font-weight: 900; }
+
+        /* 結算成績單樣式 */
+        .report-card {
+            background: #f8f9fa;
+            border: 3px solid #341f97;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 500px;
+            position: relative;
+        }
+        
+        .report-title {
+            color: #341f97;
+            border-bottom: 2px dashed #b2bec3;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .report-details {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        
+        .report-item {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .grade-badge {
+            font-size: 4rem;
+            font-weight: 900;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .comment-text {
+            font-size: 1.1rem;
+            color: #2d3436;
+            line-height: 1.5;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- 首頁畫面 (確保使用者互動後才能啟動聲音) -->
+    <!-- 首頁畫面 -->
     <div id="start-screen">
         <h1>🎵 音階辨識偵探</h1>
-        <p style="font-size: 1.2rem; color: #576574; margin-bottom: 30px;">準備好你的耳朵，來挑戰大調與五聲音階的差別吧！</p>
+        <p style="font-size: 1.2rem; color: #576574;">準備好你的耳朵，來挑戰大調與五聲音階的差別吧！</p>
+        
+        <!-- 姓名輸入區 -->
+        <div class="name-input-container">
+            <input type="text" id="player-name" class="name-input" placeholder="請輸入你的名字..." maxlength="12">
+        </div>
+
         <button class="btn-next" onclick="startGame()">▶ 開始測驗</button>
     </div>
 
@@ -178,7 +252,7 @@
         <h1>音階辨識偵探</h1>
 
         <div class="reference-box">
-            <div class="difficulty-status" id="mode-text">模式：入門測試</div>
+            <div class="difficulty-status" id="mode-text">難度：🟢 入門 (完整音階)</div>
             <div class="ref-item">
                 <span class="ref-label label-major">大調音階</span> 
                 d r m <span class="highlight-hint">f</span> s l <span class="highlight-hint">t</span> d'
@@ -193,13 +267,12 @@
             <div class="stat-card"><span class="stat-label">關卡</span><span class="stat-value" id="level">1</span></div>
             <div class="stat-card"><span class="stat-label">分數</span><span class="stat-value" id="score">0</span></div>
             <div class="stat-card"><span class="stat-label">連擊</span><span class="stat-value" id="combo">0</span></div>
-            <div class="stat-card"><span class="stat-label">正確</span><span class="stat-value" id="correct">0</span></div>
+            <div class="stat-card"><span class="stat-label">時間</span><span class="stat-value" id="timer" style="color: #e15f41;">10s</span></div>
         </div>
 
         <div id="display-area"></div>
         <div id="message"></div>
 
-        <!-- 按鈕區使用外掛 wrapper 避免跳動 -->
         <div class="controls-wrapper">
             <div class="btn-group" id="action-buttons">
                 <button class="btn-major" onclick="checkAnswer('major')">大調音階</button>
@@ -211,16 +284,31 @@
         </div>
     </div>
 
-    <!-- 結算畫面 -->
+    <!-- 結算成績單畫面 -->
     <div id="game-over" class="hidden">
-        <h2 style="font-size: 2.5rem; color: #341f97;">測驗結束！</h2>
-        <p>最終得分：<span id="final-score" style="font-size: 2rem; font-weight: 900; color: #ff6b6b;">0</span></p>
-        <button class="btn-restart" onclick="resetGame()">再挑戰一次</button>
+        <h2 style="font-size: 2rem; color: #2d3436; margin-top: 0;">測驗結束！</h2>
+        
+        <div class="report-card">
+            <h3 class="report-title"><span id="report-name">偵探</span> 的專屬評估報告</h3>
+            
+            <div class="report-details">
+                <div class="report-item">最終得分<br><span id="final-score" style="color: #ff6b6b; font-size: 1.8rem;">0</span></div>
+                <div class="report-item">最高連擊<br><span id="final-max-combo" style="color: #4ECDC4; font-size: 1.8rem;">0</span></div>
+            </div>
+
+            <div>綜合評級</div>
+            <div class="grade-badge" id="report-grade">A</div>
+            
+            <div class="comment-text" id="report-comment">
+                這裡會顯示老師的評語。
+            </div>
+        </div>
+
+        <button class="btn-restart" onclick="resetGame()">再次挑戰</button>
     </div>
 </div>
 
 <script>
-    // 包含顏色與音高頻率 (C4 - C5)
     const notesInfo = {
         'd': { color: '#eb4d4b', freq: 261.63 },
         'r': { color: '#f0932b', freq: 293.66 },
@@ -235,13 +323,23 @@
     const majorFull = ['d', 'r', 'm', 'f', 's', 'l', 't', "d'"];
     const pentatonicFull = ['d', 'r', 'm', 's', 'l', "d'"];
 
-    let state = { level: 0, score: 0, combo: 0, correctCount: 0, currentAnswer: '', isAnswered: false };
-    let renderTimers = []; // 用來清除快速點擊時殘留的定時器
-    let audioCtx = null;   // 音效 API
+    // 狀態新增了 playerName 與 maxCombo
+    let state = { 
+        playerName: '神秘偵探',
+        level: 0, 
+        score: 0, 
+        combo: 0, 
+        maxCombo: 0,
+        timeLeft: 10, 
+        currentAnswer: '', 
+        isAnswered: false 
+    };
+    let renderTimers = []; 
+    let audioCtx = null;   
+    let countdownTimer = null; 
 
     function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
 
-    // 播放音符聲音
     function playTone(frequency) {
         if (!audioCtx) return;
         const oscillator = audioCtx.createOscillator();
@@ -254,21 +352,22 @@
         gainNode.connect(audioCtx.destination);
         
         oscillator.start();
-        // 讓聲音有自然的淡出效果
         gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.6);
         oscillator.stop(audioCtx.currentTime + 0.6);
     }
 
     function startGame() {
+        // 抓取玩家輸入的名字
+        const inputName = document.getElementById('player-name').value.trim();
+        state.playerName = inputName !== '' ? inputName : '神秘偵探';
+
         document.getElementById('start-screen').classList.add('hidden');
         document.getElementById('play-screen').classList.remove('hidden');
         
-        // 啟動瀏覽器 AudioContext (必須在使用者點擊按鈕時觸發)
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
-        
         nextQuestion();
     }
 
@@ -280,38 +379,56 @@
         document.getElementById('level').innerText = state.level;
         document.getElementById('message').innerText = '';
         
-        // UI 切換
         document.getElementById('next-btn-container').classList.add('hidden');
         document.getElementById('action-buttons').classList.remove('hidden');
 
         const modeText = document.getElementById('mode-text');
         state.currentAnswer = Math.random() > 0.5 ? 'major' : 'pentatonic';
+        
         let displayNotes = [];
+        let speed = 350; 
 
-        if (state.level <= 2) {
-            modeText.innerText = "模式：入門 (完整音階順序)";
+        if (state.level <= 3) {
+            modeText.innerText = "難度：🟢 入門 (完整音階)";
             displayNotes = state.currentAnswer === 'major' ? [...majorFull] : [...pentatonicFull];
-        } else {
-            modeText.innerText = "模式：偵探 (隨機抽取音符)";
-            const count = Math.random() > 0.5 ? 4 : 5; // 隨機抽 4 或 5 個音
+            speed = 400; 
+        } else if (state.level <= 7) {
+            modeText.innerText = "難度：🟡 進階 (隨機 5 音)";
+            speed = 250; 
             if (state.currentAnswer === 'pentatonic') {
-                displayNotes = shuffle([...pentatonicFull]).slice(0, count);
+                displayNotes = shuffle([...pentatonicFull]).slice(0, 5);
             } else {
-                let mustHave = shuffle(['f', 't'])[0]; // 大調必含 f 或 t
+                let mustHave = shuffle(['f', 't'])[0];
                 let others = majorFull.filter(n => n !== mustHave);
-                displayNotes = shuffle([mustHave, ...shuffle(others).slice(0, count - 1)]);
+                displayNotes = shuffle([mustHave, ...shuffle(others).slice(0, 4)]);
+            }
+        } else {
+            modeText.innerText = "難度：🔴 地獄 (隨機 4 音，極速)";
+            speed = 150; 
+            if (state.currentAnswer === 'pentatonic') {
+                displayNotes = shuffle([...pentatonicFull]).slice(0, 4);
+            } else {
+                let mustHave = shuffle(['f', 't'])[0];
+                let others = majorFull.filter(n => n !== mustHave);
+                displayNotes = shuffle([mustHave, ...shuffle(others).slice(0, 3)]);
             }
         }
-        renderNotes(displayNotes);
+        
+        renderNotes(displayNotes, speed);
     }
 
-    function renderNotes(notes) {
+    function renderNotes(notes, speed) {
         const area = document.getElementById('display-area');
         area.innerHTML = '';
         
-        // 預防玩家瘋狂點擊下一題：清除先前的定時器
         renderTimers.forEach(timer => clearTimeout(timer));
         renderTimers = [];
+        clearInterval(countdownTimer); 
+        
+        document.getElementById('timer').innerText = '準備';
+        document.getElementById('timer').style.color = "#95a5a6";
+
+        let totalRenderTime = notes.length * speed;
 
         notes.forEach((note, i) => {
             let timer = setTimeout(() => {
@@ -320,13 +437,53 @@
                 div.style.backgroundColor = notesInfo[note].color;
                 div.innerText = note;
                 area.appendChild(div);
-                
-                // 播放音高
                 playTone(notesInfo[note].freq);
-                
-            }, i * 350); // 將間隔拉長到 350ms，讓聲音聽得更清楚
+            }, i * speed); 
             renderTimers.push(timer);
         });
+
+        setTimeout(startTimer, totalRenderTime + 200);
+    }
+
+    function startTimer() {
+        clearInterval(countdownTimer);
+        state.timeLeft = 10; 
+        const timerDisplay = document.getElementById('timer');
+        timerDisplay.innerText = state.timeLeft + 's';
+        timerDisplay.style.color = "#2ecc71"; 
+        
+        countdownTimer = setInterval(() => {
+            if (state.isAnswered) {
+                clearInterval(countdownTimer);
+                return;
+            }
+            
+            state.timeLeft--;
+            timerDisplay.innerText = state.timeLeft + 's';
+            
+            if (state.timeLeft <= 3) {
+                timerDisplay.style.color = "#e74c3c"; 
+            }
+            
+            if (state.timeLeft <= 0) {
+                clearInterval(countdownTimer);
+                timeOut();
+            }
+        }, 1000);
+    }
+
+    function timeOut() {
+        if (state.isAnswered) return;
+        state.isAnswered = true;
+        state.combo = 0;
+        
+        const msg = document.getElementById('message');
+        msg.innerText = "⏰ 時間到！未作答";
+        msg.style.color = "#e74c3c";
+        
+        document.getElementById('combo').innerText = state.combo;
+        document.getElementById('action-buttons').classList.add('hidden');
+        document.getElementById('next-btn-container').classList.remove('hidden');
     }
 
     function checkAnswer(choice) {
@@ -335,41 +492,78 @@
         const msg = document.getElementById('message');
         
         if (choice === state.currentAnswer) {
-            // 答對邏輯
-            state.isAnswered = true; // 鎖定作答
-            state.score += (100 + (state.combo * 20));
-            state.correctCount++;
+            state.isAnswered = true; 
+            clearInterval(countdownTimer); 
+
+            let timeBonus = state.timeLeft * 5;
+            state.score += (100 + (state.combo * 20) + timeBonus);
             state.combo++;
-            msg.innerText = "✔️ 正確！";
+            
+            // 紀錄最大連擊
+            if (state.combo > state.maxCombo) {
+                state.maxCombo = state.combo;
+            }
+
+            msg.innerText = `✔️ 正確！ (時間紅利 +${timeBonus})`;
             msg.style.color = "#2ecc71";
             
-            // 切換按鈕
             document.getElementById('action-buttons').classList.add('hidden');
             document.getElementById('next-btn-container').classList.remove('hidden');
-            
         } else {
-            // 答錯邏輯 (允許重試)
             state.combo = 0;
             msg.innerText = "❌ 答錯了，請再試一次！";
             msg.style.color = "#e74c3c";
-            // 注意：這裡不設定 isAnswered = true，也不隱藏作答按鈕，讓玩家可以按另一個選項
         }
         
         document.getElementById('score').innerText = state.score;
         document.getElementById('combo').innerText = state.combo;
-        document.getElementById('correct').innerText = state.correctCount;
     }
 
     function showGameOver() {
         document.getElementById('play-screen').classList.add('hidden');
         document.getElementById('game-over').classList.remove('hidden');
+        
+        // 填入成績單資料
+        document.getElementById('report-name').innerText = state.playerName;
         document.getElementById('final-score').innerText = state.score;
+        document.getElementById('final-max-combo').innerText = state.maxCombo;
+
+        // 評分與評語系統
+        const gradeEl = document.getElementById('report-grade');
+        const commentEl = document.getElementById('report-comment');
+        
+        if (state.score >= 1800) {
+            gradeEl.innerText = 'S';
+            gradeEl.style.color = '#e1b12c'; // 金色
+            commentEl.innerHTML = "<strong>🏆 首席音樂偵探！</strong><br>太神了！你的耳朵跟調音器一樣精準，即使在「地獄難度」也能立刻抓出關鍵音符，完全具備絕對音感的潛力！";
+        } else if (state.score >= 1200) {
+            gradeEl.innerText = 'A';
+            gradeEl.style.color = '#e84118'; // 紅色
+            commentEl.innerHTML = "<strong>🥇 高級音階調查員！</strong><br>非常厲害！你已經能輕鬆分辨大調中的 Fa 和 Ti 與五聲音階的差別了。反應速度也很棒，繼續保持！";
+        } else if (state.score >= 600) {
+            gradeEl.innerText = 'B';
+            gradeEl.style.color = '#00a8ff'; // 藍色
+            commentEl.innerHTML = "<strong>🥈 見習音樂偵探！</strong><br>表現不錯喔！你在入門階段很穩定，但在音符隨機跳躍、速度變快時可能會有點慌張。多試幾次一定會更好！";
+        } else {
+            gradeEl.innerText = 'C';
+            gradeEl.style.color = '#7f8fa6'; // 灰色
+            commentEl.innerHTML = "<strong>🥉 迷路的音符！</strong><br>別灰心！辨識音階需要一點時間讓耳朵習慣。建議可以先在腦海中多哼唱幾次「大調」與「五聲音階」的感覺，再來挑戰喔！";
+        }
     }
 
     function resetGame() {
-        state = { level: 0, score: 0, combo: 0, correctCount: 0, currentAnswer: '', isAnswered: false };
+        // 重置數值，但保留玩家名字
+        const keepName = state.playerName;
+        state = { 
+            playerName: keepName,
+            level: 0, score: 0, combo: 0, maxCombo: 0, timeLeft: 10, currentAnswer: '', isAnswered: false 
+        };
+        clearInterval(countdownTimer);
         document.getElementById('start-screen').classList.remove('hidden');
         document.getElementById('game-over').classList.add('hidden');
+        
+        // 將名字填回輸入框
+        document.getElementById('player-name').value = keepName === '神秘偵探' ? '' : keepName;
     }
 </script>
 
